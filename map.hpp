@@ -14,13 +14,13 @@ namespace ft
 	template <typename T>
 	struct node
 	{
-		typedef node<T>                                      node_type;
-		typedef node<T>                                      *node_pointer;
-		T     data;
-		node_pointer parent;
-		node_pointer left;
-		node_pointer right;
-		char  color;
+		typedef node<T>  node_type;
+		typedef node<T> *node_pointer;
+		T                data;
+		node_pointer     parent;
+		node_pointer     left;
+		node_pointer     right;
+		char             color;
 
 		node(T data, bool color = black)
 			: data(data), parent(NULL), left(NULL), right(NULL), color(color)
@@ -31,32 +31,35 @@ namespace ft
 		{
 		}
 
-		bool operator == (const node_type &other) const{
+		bool operator==(const node_type &other) const
+		{
 			return data == other.data;
 		}
 
-		bool operator < (const node_type &other) const{
+		bool operator<(const node_type &other) const
+		{
 			return data < other.data;
 		}
 
-		bool operator != (const node_type &other) const{
+		bool operator!=(const node_type &other) const
+		{
 			return !(*this == other);
 		}
 
-		bool operator <= (const node_type &other) const{
+		bool operator<=(const node_type &other) const
+		{
 			return *this == other || *this < other;
 		}
 
-		bool operator >= (const node_type &other) const
+		bool operator>=(const node_type &other) const
 		{
 			return !(*this < other);
 		}
 
-		bool operator > (const node_type &other) const{
+		bool operator>(const node_type &other) const
+		{
 			return !(*this <= other);
 		}
-
-
 	};
 
 	/** @RB_tree
@@ -68,17 +71,17 @@ namespace ft
 	class RB_tree
 	{
 	public:
-		typedef T                                      value_type;
-		typedef const typename value_type::first_type  key_type;
-		typedef const typename value_type::second_type elem_type;
-		typedef node<value_type>                       node_type;
-		typedef node_type							 *node_pointer;
-		typedef typename Alloc::size_type              size_type;
-		typedef Compare                       key_compare;
-		typedef Alloc                         allocator_type;
-		typedef RB_tree<value_type,key_compare,   allocator_type>           tree_type;
+		typedef T                                                value_type;
+		typedef const typename value_type::first_type            key_type;
+		typedef const typename value_type::second_type           elem_type;
+		typedef node<value_type>                                 node_type;
+		typedef node_type									   *node_pointer;
+		typedef typename Alloc::size_type                        size_type;
+		typedef Compare                                          key_compare;
+		typedef Alloc                                            allocator_type;
+		typedef RB_tree<value_type, key_compare, allocator_type> tree_type;
 
-	private:
+//	private:
 		Alloc        _allocator;
 		/// _end is the header, with:
 		/// - _end->left, the first element
@@ -348,23 +351,30 @@ namespace ft
 				return;
 			clear_rec(node->left);
 			clear_rec(node->right);
-			_allocator.deallocate(node, 1);
 		}
 
 		void init()
 		{
 			_end->color = nill;
 			_root = _end;
-			_size = 0;
 			_low = _end;
+			_size = 0;
 		}
 
 	public:
 		RB_tree()
 		{
-			_end = _allocator.allocate(1);
+			_end =  _allocator.allocate(1);
+//			std::cout << "_end address = " << static_cast<void*>(_end) << std::endl;
 			init();
 		}
+
+//		RB_tree(node_pointer pointer) : _end(pointer), _size(0)
+//		{
+//			init();
+//		}
+
+
 
 		~RB_tree()
 		{
@@ -379,6 +389,7 @@ namespace ft
 		node_pointer insert(const value_type &data)
 		{
 			node_pointer new_node = _allocator.allocate(1);
+//			std::cout << "new_node address = " << static_cast<void*>(new_node) << std::endl;
 			_allocator.construct(new_node, data);
 			if (!_size)
 			{
@@ -462,9 +473,7 @@ namespace ft
 			}
 			else
 				init();
-			_allocator.deallocate(rem_node, 1);
-
-				return true;
+			return true;
 		}
 
 		bool remove(key_type &k)
@@ -514,16 +523,16 @@ namespace ft
 		//			return pointer;
 		//		}
 
-//		node_pointer begin()
-//		{
-//			return static_cast<node_pointer>(this->_low);
-//		}
-//
-//		node_pointer begin() const
-//		{
-//			return static_cast<const node_pointer>(this->_low);
-//		}
-//
+		//		node_pointer begin()
+		//		{
+		//			return static_cast<node_pointer>(this->_low);
+		//		}
+		//
+		//		node_pointer begin() const
+		//		{
+		//			return static_cast<const node_pointer>(this->_low);
+		//		}
+		//
 		node_pointer begin()
 		{
 			return _low;
@@ -556,6 +565,8 @@ namespace ft
 
 		node_pointer lower_bound(key_type &k) const
 		{
+			if (!_size)
+				return NULL;
 			node_type    node = node_type(ft::make_pair(k, elem_type()));
 			node_pointer current = _root;
 			node_pointer res = _end;
@@ -581,6 +592,8 @@ namespace ft
 
 		node_pointer upper_bound(key_type &k) const
 		{
+			if (!_size)
+				return NULL;
 			node_type    node = node_type(ft::make_pair(k, elem_type()));
 			node_pointer current = _root;
 			node_pointer res = _end;
@@ -636,7 +649,7 @@ namespace ft
 	class tree_iterator
 	{
 	public:
-		typedef T iterator_type;
+		typedef T                            iterator_type;
 		typedef tree_iterator<iterator_type> iterator;
 		typedef typename iterator_traits<iterator_type>::value_type value_type;
 		typedef typename iterator_traits<iterator_type>::difference_type
@@ -649,8 +662,8 @@ namespace ft
 		typedef node_type       *node_pointer;
 		typedef tree_const_iterator<const iterator_type, Compare> const_iterator;
 
-		node_pointer _pointer;
-		Compare      compare;
+		node_pointer                                              _pointer;
+		Compare                                                   compare;
 
 		/// Constructors and destructor
 		tree_iterator() : _pointer()
@@ -661,8 +674,19 @@ namespace ft
 		{
 		}
 
-		operator const_iterator () const
-		{ return const_iterator(const_cast<typename const_iterator::node_pointer>(_pointer)); }
+		tree_iterator(const tree_iterator &other)
+		{
+			*this = other;
+		}
+
+		operator tree_iterator<const T, Compare>() const
+		{
+			return tree_iterator<const T, Compare>(_pointer);
+		}
+
+		//		operator const_iterator () const
+		//		{ return const_iterator(const_cast<typename
+		//const_iterator::node_pointer>(_pointer)); }
 
 		/// Operators
 		tree_iterator &operator=(const tree_iterator &other)
@@ -744,15 +768,15 @@ namespace ft
 		}
 
 		template <class U>
-		bool operator==(const U &other)
+		bool operator==(const U &other) const
 		{
-			return _pointer == other.base();
+			return _pointer == other._pointer;
 		}
 
 		template <class U>
-		bool operator!=(const U &other)
+		bool operator!=(const U &other) const
 		{
-			return _pointer != other.base();
+			return _pointer != other._pointer;
 		}
 
 		node_pointer base()
@@ -771,148 +795,149 @@ namespace ft
 		}
 	};
 
-
-	/** @tree_const_iterator
-	 * All required attributes and methods from:
-	 * https://www.cplusplus.com/reference/iterator/iterator/
-	 */
-	template <typename T, typename Compare = ft::less<T> >
-	class tree_const_iterator
-	{
-	public:
-		typedef T iterator_type;
-		typedef tree_iterator<iterator_type> iterator;
-		typedef typename iterator_traits<iterator_type>::value_type value_type;
-		typedef typename iterator_traits<iterator_type>::difference_type
-																   difference_type;
-		typedef typename iterator_traits<iterator_type>::pointer   pointer;
-		typedef typename iterator_traits<iterator_type>::reference reference;
-		typedef typename iterator_traits<iterator_type>::iterator_category
-								 iterator_category;
-		typedef const node<value_type> node_type;
-		typedef node_type       *node_pointer;
-
-		node_pointer _pointer;
-		Compare      _compare;
-
-		/// Constructors and destructor
-		tree_const_iterator() : _pointer()
-		{
-		}
-
-		tree_const_iterator(node_pointer pointer) : _pointer(pointer)
-		{
-		}
-
-		operator iterator() const
-		{ return iterator(const_cast<typename iterator::node_pointer>(_pointer)); }
-
-		/// Operators
-		tree_const_iterator &operator=(const tree_const_iterator &other)
-		{
-			this->_pointer = other._pointer;
-			return *this;
-		}
-
-		reference operator*()
-		{
-			return _pointer->data;
-		}
-
-		reference operator*() const
-		{
-			return _pointer->data;
-		}
-
-		pointer operator->() const
-		{
-			return &_pointer->data;
-		}
-
-		tree_const_iterator &operator++()
-		{
-			if (_pointer->right->color != nill)
-			{
-				_pointer = _pointer->right;
-				while (_pointer->left->color != nill)
-					_pointer = _pointer->left;
-				return *this;
-			}
-			while (_pointer->color != nill)
-			{
-				node_pointer temp = _pointer;
-				_pointer = _pointer->parent;
-				if (!_compare(_pointer->data, temp->data))
-					break;
-			}
-			return *this;
-		}
-
-		tree_const_iterator operator++(int)
-		{
-			tree_const_iterator tmp = *this;
-			++*this;
-			return tmp;
-		}
-
-		tree_const_iterator &operator--()
-		{
-			if (_pointer->color == nill)
-			{
-				_pointer = _pointer->right;
-				return *this;
-			}
-			if (_pointer->left->color != nill)
-			{
-				_pointer = _pointer->left;
-				while (_pointer->right->color != nill)
-					_pointer = _pointer->right;
-				return *this;
-			}
-			while (_pointer->parent->color != nill)
-			{
-				node_pointer temp = _pointer;
-				_pointer = _pointer->parent;
-				if (!_compare(temp->data, _pointer->data))
-					break;
-			}
-			return *this;
-		}
-
-		tree_const_iterator operator--(int)
-		{
-			tree_const_iterator tmp = *this;
-			--*this;
-			return tmp;
-		}
-
-		template <class U>
-		bool operator==(const U &other)
-		{
-			return _pointer == other.base();
-		}
-
-		template <class U>
-		bool operator!=(const U &other)
-		{
-			return _pointer != other.base();
-		}
-
-		node_pointer base()
-		{
-			return _pointer;
-		}
-
-		node_pointer base() const
-		{
-			return _pointer;
-		}
-
-		Compare comparator()
-		{
-			return _compare;
-		}
-	};
+	//
+	//	/** @tree_const_iterator
+	//	 * All required attributes and methods from:
+	//	 * https://www.cplusplus.com/reference/iterator/iterator/
+	//	 */
+	//	template <typename T, typename Compare = ft::less<T> >
+	//	class tree_const_iterator
+	//	{
+	//	public:
+	//		typedef T iterator_type;
+	//		typedef tree_iterator<iterator_type> iterator;
+	//		typedef typename iterator_traits<iterator_type>::value_type
+	//value_type; 		typedef typename
+	//iterator_traits<iterator_type>::difference_type 																   difference_type; 		typedef
+	//typename iterator_traits<iterator_type>::pointer   pointer; 		typedef
+	//typename iterator_traits<iterator_type>::reference reference; 		typedef
+	//typename iterator_traits<iterator_type>::iterator_category
+	//								 iterator_category;
+	//		typedef const node<value_type> node_type;
+	//		typedef node_type       *node_pointer;
+	//
+	//		node_pointer _pointer;
+	//		Compare      _compare;
+	//
+	//		/// Constructors and destructor
+	//		tree_const_iterator() : _pointer()
+	//		{
+	//		}
+	//
+	//		tree_const_iterator(node_pointer pointer) : _pointer(pointer)
+	//		{
+	//		}
+	//
+	//		operator iterator() const
+	//		{ return iterator(const_cast<typename
+	//iterator::node_pointer>(_pointer)); }
+	//
+	//		/// Operators
+	//		tree_const_iterator &operator=(const tree_const_iterator &other)
+	//		{
+	//			this->_pointer = other._pointer;
+	//			return *this;
+	//		}
+	//
+	//		reference operator*()
+	//		{
+	//			return _pointer->data;
+	//		}
+	//
+	//		reference operator*() const
+	//		{
+	//			return _pointer->data;
+	//		}
+	//
+	//		pointer operator->() const
+	//		{
+	//			return &_pointer->data;
+	//		}
+	//
+	//		tree_const_iterator &operator++()
+	//		{
+	//			if (_pointer->right->color != nill)
+	//			{
+	//				_pointer = _pointer->right;
+	//				while (_pointer->left->color != nill)
+	//					_pointer = _pointer->left;
+	//				return *this;
+	//			}
+	//			while (_pointer->color != nill)
+	//			{
+	//				node_pointer temp = _pointer;
+	//				_pointer = _pointer->parent;
+	//				if (!_compare(_pointer->data, temp->data))
+	//					break;
+	//			}
+	//			return *this;
+	//		}
+	//
+	//		tree_const_iterator operator++(int)
+	//		{
+	//			tree_const_iterator tmp = *this;
+	//			++*this;
+	//			return tmp;
+	//		}
+	//
+	//		tree_const_iterator &operator--()
+	//		{
+	//			if (_pointer->color == nill)
+	//			{
+	//				_pointer = _pointer->right;
+	//				return *this;
+	//			}
+	//			if (_pointer->left->color != nill)
+	//			{
+	//				_pointer = _pointer->left;
+	//				while (_pointer->right->color != nill)
+	//					_pointer = _pointer->right;
+	//				return *this;
+	//			}
+	//			while (_pointer->parent->color != nill)
+	//			{
+	//				node_pointer temp = _pointer;
+	//				_pointer = _pointer->parent;
+	//				if (!_compare(temp->data, _pointer->data))
+	//					break;
+	//			}
+	//			return *this;
+	//		}
+	//
+	//		tree_const_iterator operator--(int)
+	//		{
+	//			tree_const_iterator tmp = *this;
+	//			--*this;
+	//			return tmp;
+	//		}
+	//
+	//		template <class U>
+	//		bool operator==(const U &other)
+	//		{
+	//			return _pointer == other.base();
+	//		}
+	//
+	//		template <class U>
+	//		bool operator!=(const U &other)
+	//		{
+	//			return _pointer != other.base();
+	//		}
+	//
+	//		node_pointer base()
+	//		{
+	//			return _pointer;
+	//		}
+	//
+	//		node_pointer base() const
+	//		{
+	//			return _pointer;
+	//		}
+	//
+	//		Compare comparator()
+	//		{
+	//			return _compare;
+	//		}
+	//	};
 
 	/** @map
 	 * All required attributes and methods from:
@@ -958,18 +983,26 @@ namespace ft
 			}
 		};
 
-		typedef RB_tree<value_type, value_compare>             tree_type;
 		typedef node<value_type>                               node_type;
 		typedef node_type									 *node_pointer;
 		typedef tree_iterator<value_type, value_compare>       iterator;
-		typedef tree_const_iterator<const value_type, value_compare> const_iterator;
+		typedef tree_iterator<const value_type, value_compare> const_iterator;
 		typedef ft::reverse_iterator<iterator>                 reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>		const_reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef std::allocator<node_type> node_allocator;
+		typedef RB_tree<value_type, value_compare, node_allocator>
+										  tree_type;
+		typedef tree_type                *tree_pointer;
+		typedef std::allocator<tree_type> tree_allocator;
+
 
 	protected:
-		const key_compare    _comp;
-		const allocator_type _alloc;
-		tree_type            _tree;
+		key_compare    _comp;
+		allocator_type _alloc;
+//		node_allocator		_node_alloc;
+//		tree_allocator       _tree_alloc;
+		tree_type         _tree;
+//		node_pointer         _node_end;
 
 	public:
 		/// Constructors
@@ -977,6 +1010,9 @@ namespace ft
 			const allocator_type &alloc = allocator_type())
 			: _comp(comp), _alloc(alloc), _tree()
 		{
+//			_tree = _tree_alloc.allocate(1);
+//			_node_end = _node_alloc.allocate(1);
+//			_tree_alloc.construct(_tree, tree_type());
 		}
 
 		template <class InputIterator>
@@ -985,6 +1021,8 @@ namespace ft
 			const allocator_type &alloc = allocator_type())
 			: _comp(comp), _alloc(alloc), _tree()
 		{
+//			_tree = _tree_alloc.allocate(1);
+//			_tree = tree_type();
 			while (first != last)
 				insert(*first++);
 		}
@@ -992,18 +1030,29 @@ namespace ft
 		map(const map &x)
 			: _comp(x.key_comp()), _alloc(x.get_allocator()), _tree()
 		{
+//			_tree = _tree_alloc.allocate(1);
+//			_tree_alloc.construct(_tree);
 			const_iterator it = x.begin();
 			while (it != x.end())
 				insert(*it++);
 		}
 
-		map &operator=(const map &other) {
+		map &operator=(const map &other)
+		{
+//			_tree_alloc.destroy(_tree);
+//			_tree_alloc.deallocate(_tree, 1);
+//			_tree = _tree_alloc.allocate(1);
+//			_tree_alloc.construct(_tree);
 			_tree.clear();
 			insert(other.begin(), other.end());
 			return *this;
 		}
 
-		~map(){};
+		~map()
+		{
+//			_tree_alloc.destroy(_tree);
+//			_tree_alloc.deallocate(_tree, 1);
+		};
 
 		/// Member functions
 		iterator begin()
@@ -1063,18 +1112,13 @@ namespace ft
 
 		mapped_type &operator[](const key_type &k)
 		{
-			value_type   val = ft::make_pair(k, T());
-			node_pointer found = _tree.find(val);
-			if (found->color != nill)
-				return found->data.second;
-			node_pointer inserted = _tree.insert(val);
-			return inserted->data.second;
+			return insert(ft::make_pair(k,mapped_type())).first->second;
 		}
 
 		pair<iterator, bool> insert(const value_type &val)
 		{
 			node_pointer found = _tree.find(val);
-			if (found->parent)
+			if (found->color != nill)
 				return ft::make_pair(iterator(found), false);
 			node_pointer inserted = _tree.insert(val);
 			return ft::make_pair(iterator(inserted), true);
@@ -1109,12 +1153,16 @@ namespace ft
 				erase(first++);
 		}
 
-//		void ft_swap(map &x)
-//		{
-//			map temp = *this;
-//			*this = x;
-//			x = temp;
-//		}
+		void swap(map &x)
+		{
+			std::swap(_comp, x._comp);
+			std::swap(_alloc, x._alloc);
+			std::swap(_tree._allocator, x._tree._allocator);
+			std::swap(_tree._root, x._tree._root);
+			std::swap(_tree._end, x._tree._end);
+			std::swap(_tree._compare, x._tree._compare);
+			std::swap(_tree._size, x._tree._size);
+		}
 
 		void clear()
 		{
@@ -1174,7 +1222,8 @@ namespace ft
 								 iterator(upper_bound(k)));
 		}
 
-		pair<const_iterator, const_iterator> equal_range(const key_type &k) const
+		pair<const_iterator, const_iterator>
+		equal_range(const key_type &k) const
 		{
 			return ft::make_pair(const_iterator(lower_bound(k)),
 								 const_iterator(upper_bound(k)));
@@ -1190,33 +1239,38 @@ namespace ft
 			_tree.print();
 		}
 
-		bool operator == (const map_type &other) const{
-			return size() == other.size() && ft::equal(begin(), end(), other.begin(), other.end());
+		bool operator==(const map_type &other) const
+		{
+			return size() == other.size() &&
+				   ft::equal(begin(), end(), other.begin(), other.end());
 		}
 
-		bool operator < (const map_type &other) const{
-			return std::lexicographical_compare(begin(), end(), other.begin(), other.end());
+		bool operator<(const map_type &other) const
+		{
+			return std::lexicographical_compare(begin(), end(), other.begin(),
+												other.end());
 		}
 
-		bool operator != (const map_type &other) const{
+		bool operator!=(const map_type &other) const
+		{
 			return !(*this == other);
 		}
 
-		bool operator <= (const map_type &other) const{
+		bool operator<=(const map_type &other) const
+		{
 			return *this == other || *this < other;
 		}
 
-		bool operator >= (const map_type &other) const
+		bool operator>=(const map_type &other) const
 		{
 			return !(*this < other);
 		}
 
-		bool operator > (const map_type &other) const{
+		bool operator>(const map_type &other) const
+		{
 			return !(*this <= other);
 		}
-
 	};
-
 
 }// namespace ft
 

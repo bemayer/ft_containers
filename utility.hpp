@@ -2,13 +2,11 @@
 #define UTILITY_HPP
 
 #include <cstddef>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <iterator>
 #include <sstream>
-#include <cstdlib>
-#include <ctime>
-
-
 
 #include <utility>
 
@@ -82,7 +80,7 @@ namespace ft
 	{
 	public:
 		// Member types
-		typedef T							iterator_type;
+		typedef T iterator_type;
 		using typename T::difference_type;
 		using typename T::iterator_category;
 		using typename T::pointer;
@@ -90,50 +88,56 @@ namespace ft
 		using typename T::value_type;
 
 		// Constructors
-		reverse_iterator() : _iterator(){}
+		reverse_iterator() : _iterator()
+		{
+		}
 
-		reverse_iterator(T &other): _iterator(other)
+		reverse_iterator(const T &other) : _iterator(other)
 		{
 		}
 
 		template <typename U>
-		reverse_iterator(const reverse_iterator<U> &other): _iterator(other.base())
+		reverse_iterator(const reverse_iterator<U> &other)
+			: _iterator(other.base())
 		{
 		}
 
-		template <typename U>
-		reverse_iterator operator=(const reverse_iterator<U> &u) {
-			if (reinterpret_cast<const void *>(this) == reinterpret_cast<const void *>(&u))
-				return (*this);
-			this->_base = u.base();
-			return (*this);
-		};
+		operator reverse_iterator<const T>() const
+		{
+			return reverse_iterator<const T>(_iterator);
+		}
+
+		//		template <typename U>
+		//		reverse_iterator operator=(const reverse_iterator<U> &other) {
+		//			if (static_cast<const void *>(this) == static_cast<const void
+		//*>(&other)) 				return *this; 			this->_base = other.base(); 			return (*this);
+		//		};
 
 		// Operators
 		reference operator*()
 		{
-			T tmp = _iterator;
+			iterator_type tmp = _iterator;
 			tmp--;
 			return *tmp;
 		}
 
 		pointer operator->()
 		{
-			T tmp = _iterator;
+			iterator_type tmp = _iterator;
 			tmp--;
 			return tmp.operator->();
 		}
 
 		reference operator*() const
 		{
-			T tmp = _iterator;
+			iterator_type tmp = _iterator;
 			tmp--;
 			return *tmp;
 		}
 
 		pointer operator->() const
 		{
-			T tmp = _iterator;
+			iterator_type tmp = _iterator;
 			tmp--;
 			return tmp.operator->();
 		}
@@ -143,30 +147,36 @@ namespace ft
 			return reference(*this->operator+(n));
 		}
 
+		bool operator==(const reverse_iterator &other) const
+		{
+			return _iterator == other._iterator;
+		};
+
+		bool operator!=(const reverse_iterator &other) const
+		{
+			return _iterator != other._iterator;
+		};
+
 		reverse_iterator &operator++()
 		{
-			T tmp = _iterator;
 			_iterator--;
-			return tmp;
+			return *this;
 		}
 
 		reverse_iterator &operator--()
 		{
-			T tmp = _iterator;
 			_iterator++;
-			return tmp;
+			return *this;
 		}
 
 		reverse_iterator operator++(int)
 		{
-			T tmp = _iterator;
-			_iterator--;
-			return tmp;
+			return reverse_iterator(_iterator.operator--(0));
 		}
 
 		reverse_iterator operator--(int)
 		{
-			return _iterator++;
+			return reverse_iterator(_iterator.operator++(0));
 		}
 
 		reverse_iterator operator+(difference_type n) const
@@ -205,13 +215,14 @@ namespace ft
 		iterator_type _iterator;
 	};
 
-	template <typename T>
-	void ft_swap(T &a, T &b)
-	{
-		T tmp(a);
-		a = b;
-		b = tmp;
-	}
+//	template <typename T>
+//	void ft_swap(T &a, T &b)
+//	{
+//		T tmp;
+//		tmp = a;
+//		a = b;
+//		b = tmp;
+//	}
 
 	template <bool Cond, class T = void>
 	struct enable_if;
@@ -236,7 +247,8 @@ namespace ft
 	}
 
 	template <typename InputIterator1, typename InputIterator2>
-	bool	equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, InputIterator2 last2)
+	bool equal(InputIterator1 first1, InputIterator1 last1,
+			   InputIterator2 first2, InputIterator2 last2)
 	{
 		while (true)
 		{
@@ -253,7 +265,6 @@ namespace ft
 		}
 		return true;
 	}
-
 
 	template <typename T>
 	typename iterator_traits<T>::difference_type distance(T first, T last)
@@ -285,15 +296,17 @@ namespace ft
 		first_type  first;
 		second_type second;
 
-		pair(): first(first_type()), second(second_type()) {}
+		pair() : first(first_type()), second(second_type())
+		{
+		}
 
-			  pair(const first_type &first, const second_type &second)
+		pair(const first_type &first, const second_type &second)
 			: first(first), second(second)
 		{
 		}
 
 		template <typename U1, typename U2>
-		pair& operator=(const pair<U1, U2> &other)
+		pair &operator=(const pair<U1, U2> &other)
 		{
 			first = other.first;
 			second = other.second;
@@ -349,7 +362,6 @@ namespace ft
 	{
 		return pair<T1, T2>(x, y);
 	}
-
 
 }// namespace ft
 

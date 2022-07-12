@@ -440,10 +440,10 @@ namespace ft
 
 		void swap(vector &other)
 		{
-			ft::ft_swap(_alloc, other._container);
-			ft::ft_swap(_data, other._data);
-			ft::ft_swap(_capacity, other._capacity);
-			ft::ft_swap(_size, other._size);
+			std::swap(_alloc, other._container);
+			std::swap(_data, other._data);
+			std::swap(_capacity, other._capacity);
+			std::swap(_size, other._size);
 		}
 
 		void clear()
