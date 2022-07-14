@@ -1,14 +1,14 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 #include <iterator>
+#include <limits>
 #include <sstream>
-
-#include <utility>
 
 namespace ft
 {
@@ -110,7 +110,8 @@ namespace ft
 		//		template <typename U>
 		//		reverse_iterator operator=(const reverse_iterator<U> &other) {
 		//			if (static_cast<const void *>(this) == static_cast<const void
-		//*>(&other)) 				return *this; 			this->_base = other.base(); 			return (*this);
+		//*>(&other)) 				return *this; 			this->_base = other.base();
+		//return (*this);
 		//		};
 
 		// Operators
@@ -147,16 +148,6 @@ namespace ft
 			return reference(*this->operator+(n));
 		}
 
-		bool operator==(const reverse_iterator &other) const
-		{
-			return _iterator == other._iterator;
-		};
-
-		bool operator!=(const reverse_iterator &other) const
-		{
-			return _iterator != other._iterator;
-		};
-
 		reverse_iterator &operator++()
 		{
 			_iterator--;
@@ -179,12 +170,18 @@ namespace ft
 			return reverse_iterator(_iterator.operator++(0));
 		}
 
-		reverse_iterator operator+(difference_type n) const
+		reverse_iterator operator+(const difference_type n) const
 		{
 			return _iterator - n;
 		}
 
-		reverse_iterator operator-(difference_type n) const
+		friend reverse_iterator operator+(difference_type  n,
+										  reverse_iterator other)
+		{
+			return other.base() - n;
+		}
+
+		reverse_iterator operator-(const difference_type n) const
 		{
 			return _iterator + n;
 		}
@@ -192,13 +189,13 @@ namespace ft
 		reverse_iterator &operator+=(difference_type n)
 		{
 			_iterator -= n;
-			return *_iterator;
+			return *this;
 		}
 
 		reverse_iterator &operator-=(difference_type n)
 		{
 			_iterator += n;
-			return *_iterator;
+			return *this;
 		}
 
 		T base()
@@ -215,20 +212,168 @@ namespace ft
 		iterator_type _iterator;
 	};
 
-//	template <typename T>
-//	void ft_swap(T &a, T &b)
-//	{
-//		T tmp;
-//		tmp = a;
-//		a = b;
-//		b = tmp;
-//	}
+	template <class T, class U>
+	reverse_iterator<U> operator+(T lhs, const reverse_iterator<U> &rhs)
+	{
+		return rhs + lhs;
+	}
 
-	template <bool Cond, class T = void>
-	struct enable_if;
+	template <class T, class U>
+	typename reverse_iterator<T>::difference_type
+	operator-(const reverse_iterator<T> &lhs, const reverse_iterator<U> &rhs)
+	{
+		return -(lhs.base() - rhs.base());
+	}
+
+	template <typename T, typename U>
+	bool operator==(const reverse_iterator<T> &lhs,
+					const reverse_iterator<U> &rhs)
+	{
+		return lhs.base() == rhs.base();
+	}
+
+	template <typename T, typename U>
+	bool operator>=(const reverse_iterator<T> &lhs,
+				   const reverse_iterator<U> &rhs)
+	{
+		return lhs.base() <= rhs.base();
+	}
+
+	template <typename T, typename U>
+	bool operator!=(const reverse_iterator<T> &lhs,
+					const reverse_iterator<U> &rhs)
+	{
+		return !(lhs == rhs);
+	};
+
+		template <typename T, typename U>
+	bool operator<(const reverse_iterator<T> &lhs,
+				   const reverse_iterator<U> &rhs)
+	{
+		return !(lhs >= rhs);
+	}
+
+			template <typename T, typename U>
+	bool operator<=(const reverse_iterator<T> &lhs,
+					const reverse_iterator<U> &rhs)
+	{
+		return lhs < rhs || lhs == rhs;
+	}
+
+	template <typename T, typename U>
+	bool operator>(const reverse_iterator<T> &lhs,
+					const reverse_iterator<U> &rhs)
+	{
+		return !(lhs <= rhs);
+	}
+
+
+	// template<typename U, typename X>
+	// bool operator<(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() > rhs.base(); }
+
+	// template<typename U, typename X>
+	// bool operator<=(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() >= rhs.base(); }
+
+	// template<typename U, typename X>
+	// bool operator>(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() < rhs.base(); }
+
+	// template<typename U, typename X>
+	// bool operator>=(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() <= rhs.base(); }
+
+
+
+
+	//	template <typename T>
+	//	void ft_swap(T &a, T &b)
+	//	{
+	//		T tmp;
+	//		tmp = a;
+	//		a = b;
+	//		b = tmp;
+	//	}
+
+	template <bool B, class T = void>
+	struct enable_if
+	{
+	};
+
+	template <class T>
+	struct enable_if<true, T>
+	{
+		typedef T type;
+	};
+
+	template <typename _Tp, _Tp __v>
+	struct integral_constant
+	{
+		static const _Tp                    value = __v;
+		typedef _Tp                         value_type;
+		typedef integral_constant<_Tp, __v> type;
+	};
+
+	typedef integral_constant<bool, true>  true_type;
+
+	typedef integral_constant<bool, false> false_type;
+
+	template <typename>
+	struct __is_integral_helper : public false_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<bool> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<char> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<signed char> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned char> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<short> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned short> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<int> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned int> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<long> : public true_type
+	{
+	};
+
+	template <>
+	struct __is_integral_helper<unsigned long> : public true_type
+	{
+	};
 
 	template <typename T>
-	struct is_integral;
+	struct is_integral : public __is_integral_helper<T>
+	{
+	};
 
 	template <typename InputIterator1, typename InputIterator2>
 	bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,

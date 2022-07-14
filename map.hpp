@@ -22,12 +22,12 @@ namespace ft
 		node_pointer     right;
 		char             color;
 
-		node(T data, bool color = black)
-			: data(data), parent(NULL), left(NULL), right(NULL), color(color)
+		node() : data(T()), parent(NULL), left(NULL), right(NULL), color(black)
 		{
 		}
 
-		node() : data(T()), parent(NULL), left(NULL), right(NULL), color(black)
+		node(T data, bool color = black)
+			: data(data), parent(NULL), left(NULL), right(NULL), color(color)
 		{
 		}
 
@@ -68,9 +68,8 @@ namespace ft
 	 */
 	template <typename T, typename Compare,
 			  typename Alloc = std::allocator<node<T> > >
-	class RB_tree
+	struct RB_tree
 	{
-	public:
 		typedef T                                                value_type;
 		typedef const typename value_type::first_type            key_type;
 		typedef const typename value_type::second_type           elem_type;
@@ -80,19 +79,17 @@ namespace ft
 		typedef Compare                                          key_compare;
 		typedef Alloc                                            allocator_type;
 		typedef RB_tree<value_type, key_compare, allocator_type> tree_type;
-
-//	private:
-		Alloc        _allocator;
+		Alloc                                                    _allocator;
+		node_pointer                                             _root;
 		/// _end is the header, with:
 		/// - _end->left, the first element
 		/// - _end->right, the last element
 		/// - _end is the only element with color == nill
-		node_pointer _root;
-		node_pointer _end;
-		Compare      _compare;
-		size_t       _size;
+		node_pointer                                             _end;
+		Compare                                                  _compare;
+		size_t                                                   _size;
 
-		void         left_rotate(node_pointer x)
+		void left_rotate(node_pointer x)
 		{
 			/// turn y's left subtree into x's right subtree
 			node_pointer y = x->right;
@@ -351,6 +348,7 @@ namespace ft
 				return;
 			clear_rec(node->left);
 			clear_rec(node->right);
+			_allocator.deallocate(node, 1);
 		}
 
 		void init()
@@ -361,24 +359,32 @@ namespace ft
 			_size = 0;
 		}
 
-	public:
-		RB_tree()
+		RB_tree(): _allocator(), _root(NULL), _end(NULL), _compare(), _size(0)
 		{
-			_end =  _allocator.allocate(1);
-//			std::cout << "_end address = " << static_cast<void*>(_end) << std::endl;
+			_end = _allocator.allocate(1);
+			_allocator.construct(_end, value_type());
+
+
+
+		/// _end is the header, with:
+		/// - _end->left, the first element
+		/// - _end->right, the last element
+		/// - _end is the only element with color == nill
+
+			//			std::cout << "_end address = " << static_cast<void*>(_end)
+			//<< std::endl;
 			init();
 		}
 
-//		RB_tree(node_pointer pointer) : _end(pointer), _size(0)
-//		{
-//			init();
-//		}
-
-
+		//		RB_tree(node_pointer pointer) : _end(pointer), _size(0)
+		//		{
+		//			init();
+		//		}
 
 		~RB_tree()
 		{
 			clear();
+			_allocator.destroy(_end);
 			_allocator.deallocate(_end, 1);
 		}
 
@@ -389,7 +395,8 @@ namespace ft
 		node_pointer insert(const value_type &data)
 		{
 			node_pointer new_node = _allocator.allocate(1);
-//			std::cout << "new_node address = " << static_cast<void*>(new_node) << std::endl;
+			//			std::cout << "new_node address = " <<
+			//static_cast<void*>(new_node) << std::endl;
 			_allocator.construct(new_node, data);
 			if (!_size)
 			{
@@ -473,6 +480,8 @@ namespace ft
 			}
 			else
 				init();
+			_allocator.destroy(rem_node);
+			_allocator.deallocate(rem_node, 1);
 			return true;
 		}
 
@@ -660,17 +669,17 @@ namespace ft
 								 iterator_category;
 		typedef node<value_type> node_type;
 		typedef node_type       *node_pointer;
-		typedef tree_const_iterator<const iterator_type, Compare> const_iterator;
+		typedef tree_iterator<const iterator_type, Compare> const_iterator;
 
 		node_pointer                                              _pointer;
 		Compare                                                   compare;
 
 		/// Constructors and destructor
-		tree_iterator() : _pointer()
+		tree_iterator() : _pointer(), compare(Compare())
 		{
 		}
 
-		tree_iterator(node_pointer pointer) : _pointer(pointer)
+		tree_iterator(node_pointer pointer) : _pointer(pointer), compare(Compare())
 		{
 		}
 
@@ -686,7 +695,7 @@ namespace ft
 
 		//		operator const_iterator () const
 		//		{ return const_iterator(const_cast<typename
-		//const_iterator::node_pointer>(_pointer)); }
+		// const_iterator::node_pointer>(_pointer)); }
 
 		/// Operators
 		tree_iterator &operator=(const tree_iterator &other)
@@ -807,11 +816,12 @@ namespace ft
 	//		typedef T iterator_type;
 	//		typedef tree_iterator<iterator_type> iterator;
 	//		typedef typename iterator_traits<iterator_type>::value_type
-	//value_type; 		typedef typename
-	//iterator_traits<iterator_type>::difference_type 																   difference_type; 		typedef
-	//typename iterator_traits<iterator_type>::pointer   pointer; 		typedef
-	//typename iterator_traits<iterator_type>::reference reference; 		typedef
-	//typename iterator_traits<iterator_type>::iterator_category
+	// value_type; 		typedef typename
+	// iterator_traits<iterator_type>::difference_type
+	// difference_type; 		typedef typename
+	// iterator_traits<iterator_type>::pointer   pointer; 		typedef typename
+	// iterator_traits<iterator_type>::reference reference; 		typedef
+	// typename iterator_traits<iterator_type>::iterator_category
 	//								 iterator_category;
 	//		typedef const node<value_type> node_type;
 	//		typedef node_type       *node_pointer;
@@ -830,7 +840,7 @@ namespace ft
 	//
 	//		operator iterator() const
 	//		{ return iterator(const_cast<typename
-	//iterator::node_pointer>(_pointer)); }
+	// iterator::node_pointer>(_pointer)); }
 	//
 	//		/// Operators
 	//		tree_const_iterator &operator=(const tree_const_iterator &other)
@@ -989,40 +999,42 @@ namespace ft
 		typedef tree_iterator<const value_type, value_compare> const_iterator;
 		typedef ft::reverse_iterator<iterator>                 reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-		typedef std::allocator<node_type> node_allocator;
-		typedef RB_tree<value_type, value_compare, node_allocator>
-										  tree_type;
-		typedef tree_type                *tree_pointer;
+		typedef std::allocator<node_type>            node_allocator;
+		typedef RB_tree<value_type, value_compare, node_allocator> tree_type;
+		typedef tree_type										 *tree_pointer;
 		typedef std::allocator<tree_type> tree_allocator;
-
 
 	protected:
 		key_compare    _comp;
 		allocator_type _alloc;
-//		node_allocator		_node_alloc;
-//		tree_allocator       _tree_alloc;
-		tree_type         _tree;
-//		node_pointer         _node_end;
+		//		node_allocator		_node_alloc;
+		//		tree_allocator       _tree_alloc;
+		tree_type      _tree;
+		//		node_pointer         _node_end;
 
 	public:
 		/// Constructors
 		map(const key_compare    &comp = key_compare(),
 			const allocator_type &alloc = allocator_type())
-			: _comp(comp), _alloc(alloc), _tree()
+			: _comp(comp)
+			, _alloc(alloc)
+			, _tree()
 		{
-//			_tree = _tree_alloc.allocate(1);
-//			_node_end = _node_alloc.allocate(1);
-//			_tree_alloc.construct(_tree, tree_type());
+			//			_tree = _tree_alloc.allocate(1);
+			//			_node_end = _node_alloc.allocate(1);
+			//			_tree_alloc.construct(_tree, tree_type());
 		}
 
 		template <class InputIterator>
 		map(InputIterator first, InputIterator last,
 			const key_compare    &comp = key_compare(),
 			const allocator_type &alloc = allocator_type())
-			: _comp(comp), _alloc(alloc), _tree()
+			: _comp(comp)
+			, _alloc(alloc)
+			, _tree(tree_type())
 		{
-//			_tree = _tree_alloc.allocate(1);
-//			_tree = tree_type();
+			//			_tree = _tree_alloc.allocate(1);
+			//			_tree = tree_type();
 			while (first != last)
 				insert(*first++);
 		}
@@ -1030,8 +1042,8 @@ namespace ft
 		map(const map &x)
 			: _comp(x.key_comp()), _alloc(x.get_allocator()), _tree()
 		{
-//			_tree = _tree_alloc.allocate(1);
-//			_tree_alloc.construct(_tree);
+			//			_tree = _tree_alloc.allocate(1);
+			//			_tree_alloc.construct(_tree);
 			const_iterator it = x.begin();
 			while (it != x.end())
 				insert(*it++);
@@ -1039,19 +1051,19 @@ namespace ft
 
 		map &operator=(const map &other)
 		{
-//			_tree_alloc.destroy(_tree);
-//			_tree_alloc.deallocate(_tree, 1);
-//			_tree = _tree_alloc.allocate(1);
-//			_tree_alloc.construct(_tree);
+			//			_tree_alloc.destroy(_tree);
+			//			_tree_alloc.deallocate(_tree, 1);
+			//			_tree = _tree_alloc.allocate(1);
+			//			_tree_alloc.construct(_tree);
 			_tree.clear();
 			insert(other.begin(), other.end());
 			return *this;
 		}
 
-		~map()
-		{
-//			_tree_alloc.destroy(_tree);
-//			_tree_alloc.deallocate(_tree, 1);
+		~map(){
+				//			_tree_alloc.destroy(_tree);
+				//			_tree_alloc.deallocate(_tree, 1);
+
 		};
 
 		/// Member functions
@@ -1112,7 +1124,7 @@ namespace ft
 
 		mapped_type &operator[](const key_type &k)
 		{
-			return insert(ft::make_pair(k,mapped_type())).first->second;
+			return insert(ft::make_pair(k, mapped_type())).first->second;
 		}
 
 		pair<iterator, bool> insert(const value_type &val)
@@ -1178,6 +1190,7 @@ namespace ft
 		{
 			return value_compare();
 		}
+
 		iterator find(const key_type &k)
 		{
 			return iterator(_tree.find(k));
@@ -1234,11 +1247,6 @@ namespace ft
 			return _alloc;
 		}
 
-		void print_tree() const
-		{
-			_tree.print();
-		}
-
 		bool operator==(const map_type &other) const
 		{
 			return size() == other.size() &&
@@ -1270,8 +1278,14 @@ namespace ft
 		{
 			return !(*this <= other);
 		}
-	};
 
+#ifdef DEBUG
+		void print_tree() const
+		{
+			_tree.print();
+		}
+#endif
+	};
 }// namespace ft
 
 // template <typename T, typename Compare = ft::less<T>,
