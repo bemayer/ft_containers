@@ -1,7 +1,3 @@
-//
-// Created by BenoîtMayer on 4/17/2022.
-//
-
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
@@ -11,7 +7,7 @@ namespace ft
 {
 	/** @generic_iterator
 	 * All required attributes and methods from:
-	 * https://www.cplusplus.com/reference/iterator/iterator/
+	 * https://en.cppreference.com/w/cpp/iterator/iterator
 	 */
 	template <typename T>
 	class generic_iterator
@@ -26,7 +22,7 @@ namespace ft
 				difference_type;
 		typedef typename iterator_traits<iterator_type>::pointer   pointer;
 		typedef typename iterator_traits<iterator_type>::reference reference;
-		typedef generic_iterator<iterator_type> iterator;
+		typedef generic_iterator<iterator_type>                    iterator;
 
 	private:
 		pointer _pointer;
@@ -57,54 +53,18 @@ namespace ft
 			return generic_iterator<const T>(_pointer);
 		}
 
+		~generic_iterator()
+		{
+		}
+
 		template <typename U>
-		generic_iterator operator=(generic_iterator<U> &other)
+		generic_iterator &operator=(generic_iterator<U> &other)
 		{
 			_pointer = other.base();
 			return *this;
 		}
 
-		~generic_iterator()
-		{
-		}
-
 		/// Operators
-		template <typename U>
-		bool operator==(const generic_iterator<U> &other) const
-		{
-			return _pointer == other.base();
-		}
-
-		template <typename U>
-		bool operator<(const generic_iterator<U> &other) const
-		{
-			return _pointer < other.base();
-		}
-
-		template <typename U>
-		bool operator!=(const generic_iterator<U> &other) const
-		{
-			return !(*this == other);
-		}
-
-		template <typename U>
-		bool operator<=(const generic_iterator<U> &other) const
-		{
-			return *this == other || *this < other;
-		}
-
-		template <typename U>
-		bool operator>=(const generic_iterator<U> &other) const
-		{
-			return !(*this < other);
-		}
-
-		template <typename U>
-		bool operator>(const generic_iterator<U> &other) const
-		{
-			return !(*this <= other);
-		}
-
 		reference operator*()
 		{
 			return *_pointer;
@@ -122,7 +82,7 @@ namespace ft
 
 		generic_iterator operator++(int)
 		{
-			generic_iterator tmp(*this);
+			generic_iterator tmp = *this;
 			++_pointer;
 			return tmp;
 		}
@@ -132,6 +92,7 @@ namespace ft
 			++_pointer;
 			return *this;
 		}
+
 		generic_iterator operator--(int)
 		{
 			generic_iterator tmp(*this);
@@ -149,16 +110,6 @@ namespace ft
 		{
 			_pointer += n;
 			return generic_iterator(_pointer);
-		}
-
-		generic_iterator operator+(difference_type n) const
-		{
-			return generic_iterator(_pointer + n);
-		}
-
-		friend generic_iterator operator+(difference_type n, generic_iterator iter)
-		{
-			return generic_iterator(iter.base() + n);
 		}
 
 		generic_iterator operator-=(difference_type n)
@@ -187,6 +138,64 @@ namespace ft
 			return _pointer;
 		}
 	};
+
+	template <typename T>
+	generic_iterator<T>
+	operator+(typename generic_iterator<T>::difference_type const n,
+			  generic_iterator<T> const                           iter)
+	{
+		return generic_iterator<T>(iter.base() + n);
+	}
+
+	template <typename T>
+	generic_iterator<T>
+	operator+(generic_iterator<T> const                           iter,
+			  typename generic_iterator<T>::difference_type const n)
+	{
+		return generic_iterator<T>(iter.base() + n);
+	}
+
+	template <typename T, typename U>
+	bool operator==(const generic_iterator<T> &lhs,
+					const generic_iterator<U> &rhs)
+	{
+		return lhs.base() == rhs.base();
+	}
+
+	template <typename T, typename U>
+	bool operator<(const generic_iterator<T> &lhs,
+				   const generic_iterator<U> &rhs)
+	{
+		return lhs.base() < rhs.base();
+	}
+
+	template <typename T, typename U>
+	bool operator!=(const generic_iterator<T> &lhs,
+					const generic_iterator<U> &rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <typename T, typename U>
+	bool operator<=(const generic_iterator<T> &lhs,
+					const generic_iterator<U> &rhs)
+	{
+		return lhs == rhs || lhs < rhs;
+	}
+
+	template <typename T, typename U>
+	bool operator>=(const generic_iterator<T> &lhs,
+					const generic_iterator<U> &rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+	template <typename T, typename U>
+	bool operator>(const generic_iterator<T> &lhs,
+				   const generic_iterator<U> &rhs)
+	{
+		return !(lhs <= rhs);
+	}
 
 	/** @vector
 	 * All required attributes and methods from:
@@ -299,7 +308,7 @@ namespace ft
 			return const_reverse_iterator(begin());
 		}
 
-		// Capacity
+		/// Capacity
 		size_t size() const
 		{
 			return _size;
@@ -358,7 +367,7 @@ namespace ft
 			_alloc.deallocate(new_data, new_capacity);
 		}
 
-		// Element access
+		/// Element access
 		reference operator[](size_type n)
 		{
 			if (n >= _size)
@@ -427,9 +436,9 @@ namespace ft
 		}
 
 		template <class U>
-		void assign(typename ft::enable_if<!std::numeric_limits<U>::is_integer,
-										   U>::type first,
-					U                               last)
+		void
+		assign(typename ft::enable_if<!ft::is_integral<U>::value, U>::type first,
+			   U                                                           last)
 		{
 			difference_type size = ft::distance(first, last);
 			reserve(size);
@@ -440,8 +449,9 @@ namespace ft
 
 		void push_back(const value_type &val)
 		{
-			if (_size + 1 > _capacity && _size + 1 <= max_size()){
-				_capacity = _capacity ? _capacity: 1;
+			if (_size + 1 > _capacity && _size + 1 <= max_size())
+			{
+				_capacity = _capacity ? _capacity : 1;
 				reserve(_capacity * 2 > max_size() ? max_size() :
 													 _capacity * 2);
 			}
@@ -458,15 +468,27 @@ namespace ft
 		iterator insert(iterator position, const value_type &val)
 		{
 			size_type i = position - begin();
-			this->insert(position, 1, val);
+			insert(position, 1, val);
 			return iterator(_data + i);
 		}
 
-		void insert(iterator position, size_type n, const value_type &val)
+		// template <class U, class V>
+		// void insert(iterator position, U u, V v){
+		// 	if (std::numeric_limits<U>::is_integer){
+		// 		if(!u)
+		// 			insert_value(position, u, v);}
+		// 	else
+		// 		insert_iterator<U>(position, u, v);
+		// }
+
+		template <typename U>
+		void insert(iterator position, size_type n, const U &val)
 		{
+			if (!n)
+				return;
 			vector<T> tmp(*this);
 			size_type i = position - begin();
-			this->reserve(_size + n);
+			reserve(_size + n);
 			for (size_type j = i; j < i + n; ++j)
 				_alloc.construct(_data + j, val);
 			for (size_type j = i + n; j < _size + n; ++j)
@@ -474,16 +496,14 @@ namespace ft
 			_size += n;
 		}
 
-		template <class U>
-		void insert(iterator                        position,
-					typename ft::enable_if<!std::numeric_limits<U>::is_integer,
-										   U>::type first,
-					U                               last)
+		template <typename U>
+		void
+		insert(iterator position,
+			   typename ft::enable_if<!ft::is_integral<U>::value, U>::type first,
+			   U                                                           last)
 		{
 			vector    tmp(*this);
-			size_type n = 0;
-			for (U it = first; it != last; it++)
-				n++;
+			size_type n = ft::distance(first, last);
 			size_type i = position - begin();
 			this->reserve(_size + n);
 			_size += n;
@@ -533,42 +553,45 @@ namespace ft
 		{
 			return _alloc;
 		}
-
-		bool operator==(const vector_type &other) const
-		{
-			return size() == other.size() &&
-				   ft::equal(begin(), end(), other.begin(), other.end());
-		}
-
-		bool operator<(const vector_type &other) const
-		{
-			return ft::lexicographical_compare(begin(), end(), other.begin(), other.end());
-		}
-
-		bool operator!=(const vector_type &other) const
-		{
-			return !(*this == other);
-		}
-
-		bool operator<=(const vector_type &other) const
-		{
-			return *this == other || *this < other;
-		}
-
-		bool operator>=(const vector_type &other) const
-		{
-			return !(*this < other);
-		}
-
-		bool operator>(const vector_type &other) const
-		{
-			return !(*this <= other);
-		}
-
 	};
 
-	// Non-member function overloads
+	template <typename T1, typename A1, typename T2, typename A2>
+	bool operator==(const vector<T1, A1> &lhs, const vector<T2, A2> &rhs)
+	{
+		return lhs.size() == rhs.size() &&
+			   ft::equal(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+	}
 
-}// namespace ft
+	template <typename T1, typename A1, typename T2, typename A2>
+	bool operator<(const vector<T1, A1> &lhs, const vector<T2, A2> &rhs)
+	{
+		return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(),
+										   rhs.end());
+	}
+
+	template <typename T1, typename A1, typename T2, typename A2>
+	bool operator!=(const vector<T1, A1> &lhs, const vector<T2, A2> &rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	template <typename T1, typename A1, typename T2, typename A2>
+	bool operator<=(const vector<T1, A1> &lhs, const vector<T2, A2> &rhs)
+	{
+		return lhs == rhs || lhs < rhs;
+	}
+
+	template <typename T1, typename A1, typename T2, typename A2>
+	bool operator>=(const vector<T1, A1> &lhs, const vector<T2, A2> &rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+	template <typename T1, typename A1, typename T2, typename A2>
+	bool operator>(const vector<T1, A1> &lhs, const vector<T2, A2> &rhs)
+	{
+		return !(lhs <= rhs);
+	}
+}
 
 #endif

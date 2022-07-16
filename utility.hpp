@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdlib>
-#include <ctime>
 #include <iostream>
 #include <iterator>
 #include <limits>
@@ -12,6 +11,10 @@
 
 namespace ft
 {
+	/** @iterator_tags
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/iterator/iterator_tags
+	 */
 	struct input_iterator_tag
 	{
 	};
@@ -32,54 +35,59 @@ namespace ft
 	{
 	};
 
+	/** @iterator_traits
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/iterator/iterator_traits
+	 */
 	template <typename T>
 	struct iterator_traits
 	{
-		typedef std::ptrdiff_t             difference_type;
-		typedef T                          value_type;
-		typedef T						 *pointer;
-		typedef T						 &reference;
-		typedef random_access_iterator_tag iterator_category;
+		typedef std::ptrdiff_t                  difference_type;
+		typedef T                               value_type;
+		typedef T							  *pointer;
+		typedef T							  &reference;
+		typedef ft::random_access_iterator_tag iterator_category;
 	};
 
 	template <typename T>
 	struct iterator_traits<const T>
 	{
-		typedef std::ptrdiff_t             difference_type;
-		typedef T                          value_type;
-		typedef const T                   *pointer;
-		typedef const T                   &reference;
-		typedef random_access_iterator_tag iterator_category;
+		typedef std::ptrdiff_t                  difference_type;
+		typedef T                               value_type;
+		typedef const T						*pointer;
+		typedef const T						&reference;
+		typedef ft::random_access_iterator_tag iterator_category;
 	};
 
 	template <typename T>
 	struct iterator_traits<T *>
 	{
-		typedef std::ptrdiff_t             difference_type;
-		typedef T                          value_type;
-		typedef T						 *pointer;
-		typedef T						 &reference;
-		typedef random_access_iterator_tag iterator_category;
+		typedef std::ptrdiff_t                  difference_type;
+		typedef T                               value_type;
+		typedef T							  *pointer;
+		typedef T							  &reference;
+		typedef std::random_access_iterator_tag iterator_category;
 	};
 
 	template <typename T>
 	struct iterator_traits<const T *>
 	{
-		typedef std::ptrdiff_t             difference_type;
-		typedef T                          value_type;
-		typedef const T                   *pointer;
-		typedef const T                   &reference;
-		typedef random_access_iterator_tag iterator_category;
+		typedef std::ptrdiff_t                  difference_type;
+		typedef T                               value_type;
+		typedef const T						*pointer;
+		typedef const T						&reference;
+		typedef std::random_access_iterator_tag iterator_category;
 	};
 
-	/*
+	/** @reverse_iterator
+	 * All required attributes and methods from:
 	 * https://en.cppreference.com/w/cpp/iterator/reverse_iterator
 	 */
 	template <typename T>
 	class reverse_iterator : public T
 	{
 	public:
-		// Member types
+		/// Member types
 		typedef T iterator_type;
 		using typename T::difference_type;
 		using typename T::iterator_category;
@@ -87,7 +95,7 @@ namespace ft
 		using typename T::reference;
 		using typename T::value_type;
 
-		// Constructors
+		/// Constructors
 		reverse_iterator() : _iterator()
 		{
 		}
@@ -107,14 +115,7 @@ namespace ft
 			return reverse_iterator<const T>(_iterator);
 		}
 
-		//		template <typename U>
-		//		reverse_iterator operator=(const reverse_iterator<U> &other) {
-		//			if (static_cast<const void *>(this) == static_cast<const void
-		//*>(&other)) 				return *this; 			this->_base = other.base();
-		//return (*this);
-		//		};
-
-		// Operators
+		/// Operators
 		reference operator*()
 		{
 			iterator_type tmp = _iterator;
@@ -234,7 +235,7 @@ namespace ft
 
 	template <typename T, typename U>
 	bool operator>=(const reverse_iterator<T> &lhs,
-				   const reverse_iterator<U> &rhs)
+					const reverse_iterator<U> &rhs)
 	{
 		return lhs.base() <= rhs.base();
 	}
@@ -246,14 +247,14 @@ namespace ft
 		return !(lhs == rhs);
 	};
 
-		template <typename T, typename U>
+	template <typename T, typename U>
 	bool operator<(const reverse_iterator<T> &lhs,
 				   const reverse_iterator<U> &rhs)
 	{
 		return !(lhs >= rhs);
 	}
 
-			template <typename T, typename U>
+	template <typename T, typename U>
 	bool operator<=(const reverse_iterator<T> &lhs,
 					const reverse_iterator<U> &rhs)
 	{
@@ -262,35 +263,10 @@ namespace ft
 
 	template <typename T, typename U>
 	bool operator>(const reverse_iterator<T> &lhs,
-					const reverse_iterator<U> &rhs)
+				   const reverse_iterator<U> &rhs)
 	{
 		return !(lhs <= rhs);
 	}
-
-
-	// template<typename U, typename X>
-	// bool operator<(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() > rhs.base(); }
-
-	// template<typename U, typename X>
-	// bool operator<=(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() >= rhs.base(); }
-
-	// template<typename U, typename X>
-	// bool operator>(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() < rhs.base(); }
-
-	// template<typename U, typename X>
-	// bool operator>=(const reverse_iterator<U> &lhs, const reverse_iterator<X> &rhs) { return lhs.base() <= rhs.base(); }
-
-
-
-
-	//	template <typename T>
-	//	void ft_swap(T &a, T &b)
-	//	{
-	//		T tmp;
-	//		tmp = a;
-	//		a = b;
-	//		b = tmp;
-	//	}
 
 	template <bool B, class T = void>
 	struct enable_if
@@ -303,12 +279,16 @@ namespace ft
 		typedef T type;
 	};
 
-	template <typename _Tp, _Tp __v>
+	/** @iterator_constant
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/types/integral_constant
+	 */
+	template <typename T, T t>
 	struct integral_constant
 	{
-		static const _Tp                    value = __v;
-		typedef _Tp                         value_type;
-		typedef integral_constant<_Tp, __v> type;
+		static const T                    value = t;
+		typedef T                         value_type;
+		typedef integral_constant<T, t> type;
 	};
 
 	typedef integral_constant<bool, true>  true_type;
@@ -316,65 +296,69 @@ namespace ft
 	typedef integral_constant<bool, false> false_type;
 
 	template <typename>
-	struct __is_integral_helper : public false_type
+	struct is_integral_type : public false_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<bool> : public true_type
+	struct is_integral_type<bool> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<char> : public true_type
+	struct is_integral_type<char> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<signed char> : public true_type
+	struct is_integral_type<signed char> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<unsigned char> : public true_type
+	struct is_integral_type<unsigned char> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<short> : public true_type
+	struct is_integral_type<short> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<unsigned short> : public true_type
+	struct is_integral_type<unsigned short> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<int> : public true_type
+	struct is_integral_type<int> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<unsigned int> : public true_type
+	struct is_integral_type<unsigned int> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<long> : public true_type
+	struct is_integral_type<long> : public true_type
 	{
 	};
 
 	template <>
-	struct __is_integral_helper<unsigned long> : public true_type
+	struct is_integral_type<unsigned long> : public true_type
 	{
 	};
 
 	template <typename T>
-	struct is_integral : public __is_integral_helper<T>
+	struct is_integral : public is_integral_type<T>
 	{
 	};
 
+	/** @lexicographical_compare
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/algorithm/lexicographical_compare
+	 */
 	template <typename InputIterator1, typename InputIterator2>
 	bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
 								 InputIterator2 first2, InputIterator2 last2)
@@ -391,9 +375,13 @@ namespace ft
 		return (first1 == last1) && (first2 != last2);
 	}
 
+	/** @equal
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/algorithm/equal
+	 */
 	template <typename InputIterator1, typename InputIterator2>
-	bool equal(InputIterator1 first1, InputIterator1 last1,
-			   InputIterator2 first2, InputIterator2 last2)
+	bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2,
+			   InputIterator2 last2)
 	{
 		while (true)
 		{
@@ -411,6 +399,10 @@ namespace ft
 		return true;
 	}
 
+	/** @distance
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/iterator/distance
+	 */
 	template <typename T>
 	typename iterator_traits<T>::difference_type distance(T first, T last)
 	{
@@ -432,6 +424,10 @@ namespace ft
 		}
 	};
 
+	/** @pair
+	 * Help found on:
+	 * https://en.cppreference.com/w/cpp/utility/pair
+	 */
 	template <typename T1, typename T2>
 	struct pair
 	{
@@ -503,11 +499,17 @@ namespace ft
 	}
 
 	template <typename T1, typename T2>
+	std::ostream &operator<<(std::ostream &os, const pair<T1, T2> &pair)
+	{
+		os << pair.first << ": " << pair.second;
+		return os;
+	}
+
+	template <typename T1, typename T2>
 	pair<T1, T2> make_pair(T1 x, T2 y)
 	{
 		return pair<T1, T2>(x, y);
 	}
-
-}// namespace ft
+}
 
 #endif
