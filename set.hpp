@@ -28,7 +28,7 @@ namespace ft
 		typedef ft::reverse_iterator<iterator>                 reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>           const_reverse_iterator;
 		typedef node<value_type>                               node_type;
-		typedef node_type                                      node_pointer;
+		typedef node_type                                     *node_pointer;
 		typedef std::allocator<node_type>                      node_allocator;
 		typedef RB_tree<value_type, value_compare, node_allocator>
 		                                                       tree_type;
