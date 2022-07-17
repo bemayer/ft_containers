@@ -1,10 +1,7 @@
-#include <cstdio>
-#include <ctime>
-#include <vector>
+#include <cstdlib>
 #ifdef STD
 #define VAR std
 #include <iostream>
-#include <cstdlib>
 #include <vector>
 #include <map>
 #include <stack>

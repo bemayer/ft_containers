@@ -235,7 +235,12 @@ namespace ft
 
 	public:
 		/// Constructors
-		vector(const allocator_type &alloc = allocator_type())
+		vector()
+			: _alloc(allocator_type()), _capacity(0), _data(0), _size(0)
+		{
+		}
+
+		explicit vector(const allocator_type &alloc)
 			: _alloc(alloc), _capacity(0), _data(0), _size(0)
 		{
 		}

@@ -70,9 +70,14 @@ namespace ft
 
 	public:
 		/// Constructors
-		map(const key_compare    &comp = key_compare(),
+		map() : _comp(key_compare()), _alloc(allocator_type()),
+				_tree(tree_type())
+		{
+		}
+
+		explicit map(const key_compare    &comp,
 			const allocator_type &alloc = allocator_type())
-			: _comp(comp), _alloc(alloc), _tree()
+			: _comp(comp), _alloc(alloc), _tree(tree_type())
 		{
 		}
 
@@ -80,7 +85,7 @@ namespace ft
 		map(InputIterator first, InputIterator last,
 			const key_compare    &comp = key_compare(),
 			const allocator_type &alloc = allocator_type())
-			: _comp(comp), _alloc(alloc), _tree()
+			: _comp(comp), _alloc(alloc), _tree(tree_type())
 		{
 			while (first != last){
 				insert(*first);

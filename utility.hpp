@@ -1,12 +1,7 @@
 #ifndef UTILITY_HPP
 #define UTILITY_HPP
 
-#include <algorithm>
-#include <cstddef>
-#include <cstdlib>
 #include <iostream>
-#include <iterator>
-#include <limits>
 #include <sstream>
 
 namespace ft

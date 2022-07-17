@@ -19,7 +19,11 @@ namespace ft
 		typedef typename container_type::reference       reference;
 		typedef typename container_type::const_reference const_reference;
 		container_type                                   c;
-		stack(const Container &cont = container_type()) : c(cont){};
+
+		/// Constructors
+		explicit stack(const container_type &cont = container_type()) : c(cont)
+		{
+		}
 
 		stack(const stack &other) : c(other.c)
 		{
@@ -33,6 +37,7 @@ namespace ft
 			return *this;
 		}
 
+		/// Member functions
 		reference top()
 		{
 			return c.back();

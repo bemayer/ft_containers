@@ -87,7 +87,9 @@ namespace ft
 		allocator_type                                           _allocator;
 		size_t                                                   _size;
 
-		RB_tree() : _compare(Compare()), _allocator(allocator_type())
+		RB_tree(const key_compare& comp = key_compare(),
+			const allocator_type& alloc = allocator_type()) :
+				_compare(comp), _allocator(alloc)
 		{
 			_end = _allocator.allocate(1);
 			_allocator.construct(_end, value_type());
