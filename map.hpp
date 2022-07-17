@@ -26,7 +26,8 @@ namespace ft
 		typedef typename Allocator::const_pointer const_pointer;
 		typedef std::ptrdiff_t                    difference_type;
 		typedef std::size_t                       size_type;
-		typedef map<key_type, mapped_type, key_compare, allocator_type> map_type;
+		typedef map<key_type, mapped_type, key_compare, allocator_type>
+		                                          map_type;
 
 		/** @value_compare
 		 * Description of the nested class at
@@ -51,14 +52,15 @@ namespace ft
 		};
 
 		typedef node<value_type>                               node_type;
-		typedef node_type									 *node_pointer;
+		typedef node_type                                     *node_pointer;
 		typedef tree_iterator<value_type, value_compare>       iterator;
 		typedef tree_iterator<const value_type, value_compare> const_iterator;
 		typedef ft::reverse_iterator<iterator>                 reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-		typedef std::allocator<node_type>            node_allocator;
-		typedef RB_tree<value_type, value_compare, node_allocator> tree_type;
-		typedef tree_type										 *tree_pointer;
+		typedef ft::reverse_iterator<const_iterator>           const_reverse_iterator;
+		typedef std::allocator<node_type>                      node_allocator;
+		typedef RB_tree<value_type, value_compare, node_allocator>
+		                                                       tree_type;
+		typedef tree_type                                     *tree_pointer;
 		typedef std::allocator<tree_type> tree_allocator;
 
 	protected:
@@ -78,10 +80,12 @@ namespace ft
 		map(InputIterator first, InputIterator last,
 			const key_compare    &comp = key_compare(),
 			const allocator_type &alloc = allocator_type())
-			: _comp(comp), _alloc(alloc), _tree(tree_type())
+			: _comp(comp), _alloc(alloc), _tree()
 		{
-			while (first != last)
-				insert(*first++);
+			while (first != last){
+				insert(*first);
+				++first;
+			}
 		}
 
 		map(const map &x)
@@ -92,7 +96,9 @@ namespace ft
 				insert(*it++);
 		}
 
-		~map(){};
+		~map()
+		{
+		};
 
 		map &operator=(const map &other)
 		{
@@ -191,12 +197,15 @@ namespace ft
 		void insert(InputIterator first, InputIterator last)
 		{
 			while (first != last)
-				insert(*first++);
+			{
+				insert(*first);
+				++first;
+			}
 		}
 
 		void erase(iterator position)
 		{
-			_tree.remove(position.base()->data);
+			_tree.remove(*position);
 		}
 
 		size_type erase(const key_type &k)
@@ -206,8 +215,13 @@ namespace ft
 
 		void erase(iterator first, iterator last)
 		{
+			iterator	tmp;
 			while (first != last)
-				erase(first++);
+			{
+				tmp = first;
+				++first;
+				erase(tmp);
+			}
 		}
 
 		void swap(map &x)
@@ -336,6 +350,13 @@ namespace ft
 	{
 		return !(lhs <= rhs);
 	}
-}
+}// namespace ft
+
+namespace std {
+	template<class Key, class T, class Compare, class Alloc>
+	void swap(ft::map<Key, T, Compare, Alloc> &lhs, ft::map<Key, T, Compare, Alloc> &rhs) {
+		lhs.swap(rhs);
+	}
+}// namespace std
 
 #endif

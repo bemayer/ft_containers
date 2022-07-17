@@ -34,13 +34,10 @@ debug_b:	$(TEST) $(HPP)
 std_b:		$(TEST) $(HPP)
 			$(CXX) $(CXXFLAGS) $(TEST) $(HPP) -DBONUS -o $(NAME_STD)
 
-ft_b:			$(TEST) $(HPP)
+ft_b:		$(TEST) $(HPP)
 			$(CXX) $(CXXFLAGS) $(TEST) $(HPP) -DBONUS -DFT -o $(NAME_FT)
 
 clean:
-			rm -f $(NAME_DEBUG) $(NAME_STD) $(NAME_FT) $(NAME_SUBJ)
+			rm -f $(NAME_DEBUG) $(NAME_STD) $(NAME_FT) $(NAME_S) $(NAME_S_STD)
 
-fclean: 	clean
-			rm -f $(NAME_DEBUG) $(NAME_STD) $(NAME_FT) $(NAME_SUBJ)
-
-re:			fclean all
+re:			clean all

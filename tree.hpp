@@ -72,7 +72,7 @@ namespace ft
 	{
 		typedef T                                                value_type;
 		typedef node<value_type>                                 node_type;
-		typedef node_type									   *node_pointer;
+		typedef node_type                                       *node_pointer;
 		typedef typename Alloc::size_type                        size_type;
 		typedef Compare                                          key_compare;
 		typedef Alloc                                            allocator_type;
@@ -554,7 +554,7 @@ namespace ft
 		typedef tree_iterator<iterator_type> iterator;
 		typedef typename iterator_traits<iterator_type>::value_type value_type;
 		typedef typename iterator_traits<iterator_type>::difference_type
-																   difference_type;
+				difference_type;
 		typedef typename iterator_traits<iterator_type>::pointer   pointer;
 		typedef typename iterator_traits<iterator_type>::reference reference;
 		typedef typename std::bidirectional_iterator_tag    iterator_category;
@@ -681,15 +681,17 @@ namespace ft
 	};
 
 	template <typename T1, typename C1, typename T2, typename C2>
-	bool operator==(const tree_iterator<T1, C1> &lhs, const tree_iterator<T2, C2> &rhs)
+	bool operator==(const tree_iterator<T1, C1> &lhs,
+					const tree_iterator<T2, C2> &rhs)
 	{
 		return lhs.base() == rhs.base();
 	}
 
 	template <typename T1, typename C1, typename T2, typename C2>
-	bool operator!=(const tree_iterator<T1, C1> &lhs, const tree_iterator<T2, C2> &rhs)
+	bool operator!=(const tree_iterator<T1, C1> &lhs,
+					const tree_iterator<T2, C2> &rhs)
 	{
 		return !(lhs == rhs);
 	}
-}
+}// namespace ft
 #endif

@@ -11,30 +11,6 @@
 
 namespace ft
 {
-	/** @iterator_tags
-	 * Help found on:
-	 * https://en.cppreference.com/w/cpp/iterator/iterator_tags
-	 */
-	struct input_iterator_tag
-	{
-	};
-
-	struct output_iterator_tag
-	{
-	};
-
-	struct forward_iterator_tag : public input_iterator_tag
-	{
-	};
-
-	struct bidirectional_iterator_tag : public forward_iterator_tag
-	{
-	};
-
-	struct random_access_iterator_tag : public bidirectional_iterator_tag
-	{
-	};
-
 	/** @iterator_traits
 	 * Help found on:
 	 * https://en.cppreference.com/w/cpp/iterator/iterator_traits
@@ -44,8 +20,8 @@ namespace ft
 	{
 		typedef std::ptrdiff_t                  difference_type;
 		typedef T                               value_type;
-		typedef T							  *pointer;
-		typedef T							  &reference;
+		typedef T                              *pointer;
+		typedef T                              &reference;
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
@@ -54,8 +30,8 @@ namespace ft
 	{
 		typedef std::ptrdiff_t                  difference_type;
 		typedef T                               value_type;
-		typedef const T						*pointer;
-		typedef const T						&reference;
+		typedef const T	                       *pointer;
+		typedef const T                        &reference;
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
@@ -64,8 +40,8 @@ namespace ft
 	{
 		typedef std::ptrdiff_t                  difference_type;
 		typedef T                               value_type;
-		typedef T							  *pointer;
-		typedef T							  &reference;
+		typedef T                              *pointer;
+		typedef T                              &reference;
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
@@ -74,8 +50,8 @@ namespace ft
 	{
 		typedef std::ptrdiff_t                  difference_type;
 		typedef T                               value_type;
-		typedef const T						*pointer;
-		typedef const T						&reference;
+		typedef const T                        *pointer;
+		typedef const T                        &reference;
 		typedef std::random_access_iterator_tag iterator_category;
 	};
 
@@ -213,13 +189,13 @@ namespace ft
 		iterator_type _iterator;
 	};
 
-	template <class T, class U>
+	template <typename T, typename U>
 	reverse_iterator<U> operator+(T lhs, const reverse_iterator<U> &rhs)
 	{
 		return rhs + lhs;
 	}
 
-	template <class T, class U>
+	template <typename T, typename U>
 	typename reverse_iterator<T>::difference_type
 	operator-(const reverse_iterator<T> &lhs, const reverse_iterator<U> &rhs)
 	{
@@ -268,12 +244,12 @@ namespace ft
 		return !(lhs <= rhs);
 	}
 
-	template <bool B, class T = void>
+	template <bool B, typename T = void>
 	struct enable_if
 	{
 	};
 
-	template <class T>
+	template <typename T>
 	struct enable_if<true, T>
 	{
 		typedef T type;
@@ -286,8 +262,8 @@ namespace ft
 	template <typename T, T t>
 	struct integral_constant
 	{
-		static const T                    value = t;
-		typedef T                         value_type;
+		static const T                  value = t;
+		typedef T                       value_type;
 		typedef integral_constant<T, t> type;
 	};
 
@@ -380,8 +356,8 @@ namespace ft
 	 * https://en.cppreference.com/w/cpp/algorithm/equal
 	 */
 	template <typename InputIterator1, typename InputIterator2>
-	bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2,
-			   InputIterator2 last2)
+	bool equal(InputIterator1 first1, InputIterator1 last1,
+			   InputIterator2 first2, InputIterator2 last2)
 	{
 		while (true)
 		{
@@ -454,7 +430,7 @@ namespace ft
 			return *this;
 		}
 
-		template <class U1, class U2>
+		template <typename U1, typename U2>
 		pair(const pair<U1, U2> &other)
 			: first(other.first), second(other.second)
 		{
@@ -510,6 +486,6 @@ namespace ft
 	{
 		return pair<T1, T2>(x, y);
 	}
-}
+}// namespace ft
 
 #endif

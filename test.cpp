@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <ctime>
+#include <vector>
 #ifdef STD
 #define VAR std
 #include <iostream>

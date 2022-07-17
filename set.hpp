@@ -19,19 +19,20 @@ namespace ft
 		typedef Compare                                        key_compare;
 		typedef Compare                                        value_compare;
 		typedef Alloc                                          allocator_type;
-		typedef value_type									&reference;
+		typedef value_type                                    &reference;
 		typedef const value_type                              &const_reference;
 		typedef typename Alloc::pointer                        pointer;
 		typedef typename Alloc::const_pointer                  const_pointer;
 		typedef tree_iterator<const value_type, value_compare> iterator;
 		typedef tree_iterator<const value_type, value_compare> const_iterator;
 		typedef ft::reverse_iterator<iterator>                 reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
-		typedef node<value_type>                     node_type;
-		typedef node_type						   *node_pointer;
-		typedef std::allocator<node_type>            node_allocator;
-		typedef RB_tree<value_type, value_compare, node_allocator> tree_type;
-		typedef tree_type										 *tree_pointer;
+		typedef ft::reverse_iterator<const_iterator>           const_reverse_iterator;
+		typedef node<value_type>                               node_type;
+		typedef node_type                                      node_pointer;
+		typedef std::allocator<node_type>                      node_allocator;
+		typedef RB_tree<value_type, value_compare, node_allocator>
+		                                                       tree_type;
+		typedef tree_type                                     *tree_pointer;
 		typedef std::allocator<tree_type> tree_allocator;
 
 	protected:

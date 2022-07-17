@@ -8,23 +8,18 @@ namespace ft
 {
 	/** @stack
 	 * All required attributes and methods from:
-	 * https://en.cppreference.com/w/cpp/c/stack
+	 * https://en.cppreference.com/w/cpp/container/stack
 	 */
-	template <class T, class Container = ft::vector<T> >
-	class stack
+	template <typename T, typename Container = ft::vector<T> >
+	struct stack
 	{
-	public:
 		typedef Container                                container_type;
 		typedef typename container_type::value_type      value_type;
 		typedef typename container_type::size_type       size_type;
 		typedef typename container_type::reference       reference;
 		typedef typename container_type::const_reference const_reference;
-
-	public:
-		container_type c;
-
-	public:
-		stack(const Container &cont = Container()) : c(cont){};
+		container_type                                   c;
+		stack(const Container &cont = container_type()) : c(cont){};
 
 		stack(const stack &other) : c(other.c)
 		{
