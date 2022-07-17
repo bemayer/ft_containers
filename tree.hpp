@@ -423,21 +423,26 @@ namespace ft
 			node_pointer rem_node = find(data);
 			if (rem_node->color == nill)
 				return false;
+			remove(rem_node);
+			return true;
+		}
+
+		void remove(const node_pointer &node)
+		{
 			_size--;
-			rb_delete(rem_node);
+			rb_delete(node);
 			if (_size)
 			{
-				if (rem_node->data == _low->data)
+				if (node->data == _low->data)
 					_low = tree_minimum(_root);
-				if (rem_node->data == _high->data)
+				if (node->data == _high->data)
 					_high = tree_maximum(_root);
 				_end->color = nill;
 			}
 			else
 				init();
-			_allocator.destroy(rem_node);
-			_allocator.deallocate(rem_node, 1);
-			return true;
+			_allocator.destroy(node);
+			_allocator.deallocate(node, 1);
 		}
 
 		node_pointer begin()
@@ -472,8 +477,6 @@ namespace ft
 
 		node_pointer lower_bound(const value_type &data) const
 		{
-			if (!_size)
-				return NULL;
 			node_type    node = node_type(data);
 			node_pointer current = _root;
 			node_pointer res = _end;
@@ -485,9 +488,7 @@ namespace ft
 					current = current->left;
 				}
 				else
-				{
 					current = current->right;
-				}
 			}
 			return res;
 		}
@@ -499,8 +500,6 @@ namespace ft
 
 		node_pointer upper_bound(const value_type &data) const
 		{
-			if (!_size)
-				return NULL;
 			node_type    node = node_type(data);
 			node_pointer current = _root;
 			node_pointer res = _end;
@@ -512,9 +511,7 @@ namespace ft
 					current = current->left;
 				}
 				else
-				{
 					current = current->right;
-				}
 			}
 			return res;
 		}
@@ -560,7 +557,7 @@ namespace ft
 																   difference_type;
 		typedef typename iterator_traits<iterator_type>::pointer   pointer;
 		typedef typename iterator_traits<iterator_type>::reference reference;
-		typedef typename ft::bidirectional_iterator_tag    iterator_category;
+		typedef typename std::bidirectional_iterator_tag    iterator_category;
 		typedef node<value_type>                            node_type;
 		typedef node_type								  *node_pointer;
 		typedef tree_iterator<const iterator_type, Compare> const_iterator;
@@ -683,14 +680,14 @@ namespace ft
 		}
 	};
 
-	template <typename T, typename U>
-	bool operator==(const T &lhs, const U &rhs)
+	template <typename T1, typename C1, typename T2, typename C2>
+	bool operator==(const tree_iterator<T1, C1> &lhs, const tree_iterator<T2, C2> &rhs)
 	{
 		return lhs.base() == rhs.base();
 	}
 
-	template <typename T, typename U>
-	bool operator!=(const T &lhs, const U &rhs)
+	template <typename T1, typename C1, typename T2, typename C2>
+	bool operator!=(const tree_iterator<T1, C1> &lhs, const tree_iterator<T2, C2> &rhs)
 	{
 		return !(lhs == rhs);
 	}
