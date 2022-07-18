@@ -269,7 +269,8 @@ namespace ft
 		vector &operator=(const vector &other)
 		{
 			clear();
-			_alloc.deallocate(_data, _capacity);
+			if (_data)
+				_alloc.deallocate(_data, _capacity);
 			_alloc = other._alloc;
 			_data = _alloc.allocate(other._capacity);
 			_capacity = other._capacity;
@@ -282,7 +283,8 @@ namespace ft
 		~vector()
 		{
 			clear();
-			_alloc.deallocate(_data, _capacity);
+			if (_data)
+				_alloc.deallocate(_data, _capacity);
 		}
 
 		// Iterators
@@ -351,7 +353,8 @@ namespace ft
 						_alloc.construct(tmp + i, val);
 				}
 				clear();
-				_alloc.deallocate(_data, _capacity);
+				if (_data)
+					_alloc.deallocate(_data, _capacity);
 				_data = tmp;
 				_capacity = new_capacity;
 			}
@@ -387,7 +390,8 @@ namespace ft
 				_alloc.construct(tmp + i, _data[i]);
 				_alloc.destroy(_data + i);
 			}
-			_alloc.deallocate(_data, _capacity);
+			if (_data)
+				_alloc.deallocate(_data, _capacity);
 			_capacity = new_cap;
 			_data = tmp;
 		}
@@ -468,8 +472,10 @@ namespace ft
 			clear();
 			difference_type size = ft::distance(first, last);
 			reserve(size);
-			while (first != last)
-				_alloc.construct(_data + _size++, *first++);
+			while (first != last){
+				_alloc.construct(_data + _size++, *first);
+				++first;
+			}
 		}
 
 		void push_back(const value_type &val)
@@ -512,7 +518,8 @@ namespace ft
 			for (size_type i = first_insert + n; i < new_size; i++)
 				_alloc.construct(tmp + i, _data[i - n]);
 			clear();
-			_alloc.deallocate(_data, _capacity);
+			if (_data)
+				_alloc.deallocate(_data, _capacity);
 			_data = tmp;
 			_size = new_size;
 			_capacity = new_capacity;
@@ -539,7 +546,8 @@ namespace ft
 			for (size_type i = first_insert + n; i < new_size; i++)
 				_alloc.construct(tmp + i, _data[i - n]);
 			clear();
-			_alloc.deallocate(_data, _capacity);
+			if (_data)
+				_alloc.deallocate(_data, _capacity);
 			_data = tmp;
 			_size = new_size;
 			_capacity = new_capacity;

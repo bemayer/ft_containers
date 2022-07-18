@@ -22,11 +22,11 @@ namespace ft
 		node_pointer     right;
 		char             color;
 
-		node() : data(T()), parent(NULL), left(NULL), right(NULL), color(black)
+		node() : data(T()), parent(NULL), left(NULL), right(NULL), color(red)
 		{
 		}
 
-		node(T data, bool color = black)
+		node(T data, char color = red)
 			: data(data), parent(NULL), left(NULL), right(NULL), color(color)
 		{
 		}
@@ -252,7 +252,7 @@ namespace ft
 		{
 			node_pointer y = z;
 			node_pointer x;
-			bool         y_original_color = y->color;
+			char         y_original_color = y->color;
 			if (z->left == _end)
 			{
 				x = z->right;
@@ -281,8 +281,12 @@ namespace ft
 				y->left->parent = y;
 				y->color = z->color;
 			}
+			std::cout << "Post delete:" << std::endl;
+			print();
+			std::cout << x->data << std::endl;
 			if (y_original_color == black)
 				rb_delete_fixup(x);
+			_end->color = nill;
 		}
 
 		void rb_delete_fixup(node_pointer x)
@@ -299,10 +303,12 @@ namespace ft
 						left_rotate(x->parent);
 						w = x->parent->right;
 					}
-					if (w->left->color == black && w->right->color == black)
+					if (w->left->color == black ||  w->right->color == black)
 					{
 						w->color = red;
+						x->parent->color = black;
 						x = x->parent;
+						print();
 					}
 					else
 					{
@@ -332,7 +338,8 @@ namespace ft
 					}
 					if (w->right->color == black && w->left->color == black)
 					{
-						w->color = black;
+						w->color = red;
+						x->parent->color = black;
 						x = x->parent;
 					}
 					else
@@ -344,7 +351,6 @@ namespace ft
 							left_rotate(w);
 							w = x->parent->left;
 						}
-
 						w->color = x->parent->color;
 						x->parent->color = black;
 						w->left->color = black;
@@ -354,6 +360,8 @@ namespace ft
 				}
 			}
 			x->color = black;
+			std::cout << "Post fix up:" << std::endl;
+			print();
 		}
 
 		void init()
@@ -420,31 +428,33 @@ namespace ft
 			return current;
 		}
 
-		bool remove(const value_type &data)
+		void remove_ptr(const node_pointer &node)
 		{
-			node_pointer rem_node = find(data);
-			if (rem_node->color == nill)
-				return false;
-			remove(rem_node);
-			return true;
-		}
-
-		void remove(const node_pointer &node)
-		{
-			_size--;
+			std::cout << "Rem " << node->data << std::endl;
+			print();
 			rb_delete(node);
+			_size--;
 			if (_size)
 			{
 				if (node->data == _low->data)
 					_low = tree_minimum(_root);
 				if (node->data == _high->data)
 					_high = tree_maximum(_root);
-				_end->color = nill;
 			}
 			else
 				init();
 			_allocator.destroy(node);
 			_allocator.deallocate(node, 1);
+		}
+
+		bool remove(const value_type &data)
+		{
+
+			node_pointer rem_node = find(data);
+			if (rem_node->color == nill)
+				return false;
+			remove_ptr(rem_node);
+			return true;
 		}
 
 		node_pointer begin()
@@ -530,7 +540,8 @@ namespace ft
 			{
 				std::cout << prefix;
 				std::cout << (isLeft ? "├── " : "└── ");
-				std::cout << node->data << std::endl;
+				std::string color = node->color ? "37m": "31m";
+				std::cout << "\033[" << color << node->data << "\033[0m" << std::endl;
 				print_rec(prefix + (isLeft ? "│    " : "     "), node->left,
 						  true);
 				print_rec(prefix + (isLeft ? "│    " : "     "), node->right,

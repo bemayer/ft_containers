@@ -220,12 +220,12 @@ namespace ft
 
 		void erase(iterator first, iterator last)
 		{
-			iterator	tmp;
+			node_pointer tmp;
 			while (first != last)
 			{
-				tmp = first;
+				tmp = first.base();
 				++first;
-				erase(tmp);
+				_tree.remove_ptr(tmp);
 			}
 		}
 
