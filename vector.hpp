@@ -38,32 +38,44 @@ namespace ft
 		{
 		}
 
-		generic_iterator(const generic_iterator &other)
-		{
-			*this = other;
-		}
-
-		template <typename U>
-		generic_iterator(const generic_iterator<U> &other)
-		{
-			_pointer = other.base();
-		}
-
+//		generic_iterator(const generic_iterator &other): _pointer(other.base())
+//		{
+//		}
+//
+//		template <typename U>
+//		generic_iterator(const generic_iterator<const U> &other)
+//			: _pointer(other.base())
+//		{
+//		}
+//
+//		template <typename U>
+//		generic_iterator(const generic_iterator<U> &other)
+//			: _pointer(other.base())
+//		{
+//		}
+//
 		operator generic_iterator<const T>() const
 		{
 			return generic_iterator<const T>(_pointer);
+		}
+
+		template <typename U>
+		generic_iterator &operator=(iterator &other)
+		{
+			_pointer = other.base();
+			return *this;
 		}
 
 		~generic_iterator()
 		{
 		}
 
-		template <typename U>
-		generic_iterator &operator=(generic_iterator<U> &other)
-		{
-			_pointer = other.base();
-			return *this;
-		}
+		// template <typename U>
+		// generic_iterator &operator=(generic_iterator<const U> &other)
+		// {
+		// 	_pointer = other.base();
+		// 	return *this;
+		// }
 
 		/// Operators
 		reference operator*()
@@ -211,7 +223,7 @@ namespace ft
 	class vector
 	{
 	public:
-		// Member types
+		/// Member types
 		typedef T                                        value_type;
 		typedef Allocator                                allocator_type;
 		typedef vector<value_type, allocator_type>       vector_type;
@@ -241,32 +253,34 @@ namespace ft
 		}
 
 		explicit vector(const allocator_type &alloc)
-			: _alloc(alloc), _capacity(0), _data(0), _size(0)
+			: _alloc(alloc), _capacity(0), _data(NULL), _size(0)
 		{
 		}
 
 		explicit vector(size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type())
-			: _alloc(alloc), _capacity(0), _data(0), _size(0)
+			: _alloc(alloc), _capacity(0), _data(NULL), _size(0)
 		{
 			assign(n, val);
 		}
 
 		template <typename InputIterator>
-		vector(InputIterator first, InputIterator last,
+		vector(typename ft::enable_if<!ft::is_integral<InputIterator>
+		        ::value, InputIterator>::type first,
+			   InputIterator                  last,
 			   const allocator_type &alloc = allocator_type())
 			: _alloc(alloc), _capacity(0), _data(0), _size(0)
 		{
 			assign(first, last);
 		}
 
-		vector(const vector &val)
+		vector(const vector_type &val)
 			: _alloc(val._alloc), _capacity(0), _data(0), _size(0)
 		{
 			assign(val.begin(), val.end());
 		}
 
-		vector &operator=(const vector &other)
+		vector_type &operator=(const vector_type &other)
 		{
 			clear();
 			if (_data)
@@ -287,7 +301,7 @@ namespace ft
 				_alloc.deallocate(_data, _capacity);
 		}
 
-		// Iterators
+		/// Iterators
 		iterator begin()
 		{
 			return iterator(_data);
@@ -456,8 +470,11 @@ namespace ft
 		}
 
 		/// Modifiers
-		void assign(size_type n, const value_type &val)
+		template <typename U>
+		void assign(size_type n, const U &val)
 		{
+			if (!n)
+				return;
 			clear();
 			reserve(n);
 			while (_size < n)
@@ -470,10 +487,15 @@ namespace ft
 			   U                                                           last)
 		{
 			clear();
-			difference_type size = ft::distance(first, last);
-			reserve(size);
-			while (first != last){
-				_alloc.construct(_data + _size++, *first);
+			// difference_type size = ft::distance(first, last);
+			// reserve(size);
+			// while (first != last){
+			// 	_alloc.construct(_data + _size++, *first);
+			// 	++first;
+			// }
+			while (first != last)
+			{
+				push_back(*first);
 				++first;
 			}
 		}
@@ -527,30 +549,89 @@ namespace ft
 
 		template <typename U>
 		void
-		insert(iterator position,
-			   typename ft::enable_if<!ft::is_integral<U>::value, U>::type first,
-			   U                                                           last)
+		insert(iterator position, typename ft::enable_if<!ft::is_integral<U>
+		        ::value, U>::type first, U last)
+		{
+				insert_range(position, first, last, typename U::iterator_category());
+		}
+
+		template <typename U>
+		void
+		insert_range(iterator position, U first, U last, std::input_iterator_tag)
+		{
+			// size_type   n = ft::distance(first, last);
+			// size_type   new_size = _size + n;
+			// size_type   new_capacity = comp_capacity(new_size);
+			// value_type *tmp = _alloc.allocate(new_capacity);
+			// size_type   first_insert = position - begin();
+			// for (size_type i = 0; i < first_insert; i++)
+			// 	_alloc.construct(tmp + i, _data[i]);
+			// for (size_type i = first_insert; i < first_insert + n; i++)
+			// {
+			// 	_alloc.construct(tmp + i, *first);
+			// 	++first;
+			// }
+			// for (size_type i = first_insert + n; i < new_size; i++)
+			// 	_alloc.construct(tmp + i, _data[i - n]);
+			// clear();
+			// if (_data)
+			// 	_alloc.deallocate(_data, _capacity);
+			// _data = tmp;
+			// _size = new_size;
+			// _capacity = new_capacity;
+
+			// while (first != last)
+			// {
+			// 	position = insert(position, *first);
+			// 	first++;
+			// }
+			if (position == end())
+			{
+				while (first != last)
+				{
+					push_back(*first);
+					++first;
+				}
+			}
+			vector_type tmp(first, last, get_allocator());
+			insert(position, tmp.begin(), tmp.end(), std::forward_iterator_tag());
+		}
+
+		template <typename U>
+		void
+		insert_range(iterator position, U first, U last, std::forward_iterator_tag)
 		{
 			size_type   n = ft::distance(first, last);
 			size_type   new_size = _size + n;
 			size_type   new_capacity = comp_capacity(new_size);
-			value_type *tmp = _alloc.allocate(new_capacity);
 			size_type   first_insert = position - begin();
-			for (size_type i = 0; i < first_insert; i++)
-				_alloc.construct(tmp + i, _data[i]);
-			for (size_type i = first_insert; i < first_insert + n; i++)
+			if (new_capacity > _capacity)
 			{
-				_alloc.construct(tmp + i, *first);
-				++first;
+				value_type *tmp = _alloc.allocate(new_capacity);
+
+				for (size_type i = 0; i < first_insert; i++)
+					_alloc.construct(tmp + i, _data[i]);
+				for (size_type i = first_insert; i < first_insert + n; i++)
+				{
+					_alloc.construct(tmp + i, *first);
+					++first;
+				}
+				for (size_type i = first_insert + n; i < new_size; i++)
+					_alloc.construct(tmp + i, _data[i - n]);
+				clear();
+				if (_data)
+					_alloc.deallocate(_data, _capacity);
+				_data = tmp;
+				_capacity = new_capacity;
 			}
-			for (size_type i = first_insert + n; i < new_size; i++)
-				_alloc.construct(tmp + i, _data[i - n]);
-			clear();
-			if (_data)
-				_alloc.deallocate(_data, _capacity);
-			_data = tmp;
+			else
+			{
+				for (size_type i = new_size - 1; i >= first_insert + n; i--)
+					_data[i] = _data[i - n];
+				for (size_type i = first_insert; i < first_insert + n; i++)
+					_alloc.construct(_data + i, *first++);
+			}
 			_size = new_size;
-			_capacity = new_capacity;
 		}
 
 		iterator erase(iterator position)
