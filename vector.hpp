@@ -525,40 +525,73 @@ namespace ft
 		template <typename U>
 		void insert(iterator position, size_type n, const U &val)
 		{
-			if (!n)
+//			if (!n)
+//				return;
+//			size_type   new_size = _size + n;
+//			size_type   new_capacity = comp_capacity(new_size);
+//			value_type *tmp = _alloc.allocate(new_capacity);
+//			size_type   first_insert = position - begin();
+//			for (size_type i = 0; i < first_insert; i++)
+//				_alloc.construct(tmp + i, _data[i]);
+//			for (size_type i = first_insert; i < first_insert + n; i++)
+//				_alloc.construct(tmp + i, val);
+//			for (size_type i = first_insert + n; i < new_size; i++)
+//				_alloc.construct(tmp + i, _data[i - n]);
+//			clear();
+//			if (_data)
+//				_alloc.deallocate(_data, _capacity);
+//			_data = tmp;
+//			_size = new_size;
+//			_capacity = new_capacity;
+
+
+		 	if (!n)
+		 		return;
+		 	size_type   new_size = _size + n;
+		 	size_type   first_insert = position - begin();
+		 	if (new_size > _capacity)
+		 	{
+				size_type   new_capacity = comp_capacity(new_size);
+		 		value_type *tmp = _alloc.allocate(new_capacity);
+		 		for (size_type i = 0; i < first_insert; i++)
+		 			_alloc.construct(tmp + i, _data[i]);
+		 		for (size_type i = first_insert; i < first_insert + n; i++)
+		 			_alloc.construct(tmp + i, val);
+		 		for (size_type i = first_insert + n; i < new_size; i++)
+		 			_alloc.construct(tmp + i, _data[i - n]);
+		 		clear();
+		 		if (_data)
+		 			_alloc.deallocate(_data, _capacity);
+		 		_data = tmp;
+		 		_capacity = new_capacity;
+		 	}
+		 	else
+		 	{
+		 		for (size_type i = new_size - 1; i >= first_insert + n; i--)
+		 			_data[i] = _data[i - n];
+		 		for (size_type i = first_insert; i < first_insert + n; i++)
+		 			_alloc.construct(_data + i, val);
+		 	}
+		 	_size = new_size;
+		}
+
+
+
+
+//		template <typename U>
+//		void
+//		insert(iterator position, typename ft::enable_if<!ft::is_integral<U>
+//		        ::value, U>::type first, U last)
+//		{
+//				insert_range(position, first, last, typename U::iterator_category());
+//		}
+
+		template <typename U>
+		void
+		insert(iterator position,  typename ft::enable_if<!ft::is_integral<U>::value, U>::type first, U last)
+		{
+			if (first == last)
 				return;
-			size_type   new_size = _size + n;
-			size_type   new_capacity = comp_capacity(new_size);
-			value_type *tmp = _alloc.allocate(new_capacity);
-			size_type   first_insert = position - begin();
-			for (size_type i = 0; i < first_insert; i++)
-				_alloc.construct(tmp + i, _data[i]);
-
-			for (size_type i = first_insert; i < first_insert + n; i++)
-				_alloc.construct(tmp + i, val);
-
-			for (size_type i = first_insert + n; i < new_size; i++)
-				_alloc.construct(tmp + i, _data[i - n]);
-			clear();
-			if (_data)
-				_alloc.deallocate(_data, _capacity);
-			_data = tmp;
-			_size = new_size;
-			_capacity = new_capacity;
-		}
-
-		template <typename U>
-		void
-		insert(iterator position, typename ft::enable_if<!ft::is_integral<U>
-		        ::value, U>::type first, U last)
-		{
-				insert_range(position, first, last, typename U::iterator_category());
-		}
-
-		template <typename U>
-		void
-		insert_range(iterator position, U first, U last, std::input_iterator_tag)
-		{
 			// size_type   n = ft::distance(first, last);
 			// size_type   new_size = _size + n;
 			// size_type   new_capacity = comp_capacity(new_size);
@@ -593,29 +626,28 @@ namespace ft
 					++first;
 				}
 			}
-			vector_type tmp(first, last, get_allocator());
-			insert(position, tmp.begin(), tmp.end(), std::forward_iterator_tag());
+			else
+			{
+				vector_type tmp(first, last, get_allocator());
+				insert_forward(position, tmp.begin(), tmp.end());
+			}
 		}
 
 		template <typename U>
 		void
-		insert_range(iterator position, U first, U last, std::forward_iterator_tag)
+		insert_forward(iterator position, U first, U last)
 		{
 			size_type   n = ft::distance(first, last);
 			size_type   new_size = _size + n;
-			size_type   new_capacity = comp_capacity(new_size);
 			size_type   first_insert = position - begin();
-			if (new_capacity > _capacity)
+			if (new_size > _capacity)
 			{
+				size_type   new_capacity = comp_capacity(new_size);
 				value_type *tmp = _alloc.allocate(new_capacity);
-
 				for (size_type i = 0; i < first_insert; i++)
 					_alloc.construct(tmp + i, _data[i]);
 				for (size_type i = first_insert; i < first_insert + n; i++)
-				{
-					_alloc.construct(tmp + i, *first);
-					++first;
-				}
+					_alloc.construct(tmp + i, *first++);
 				for (size_type i = first_insert + n; i < new_size; i++)
 					_alloc.construct(tmp + i, _data[i - n]);
 				clear();

@@ -167,13 +167,13 @@ namespace ft
 
 		void rb_insert_fixup(node_pointer z)
 		{
-			while (z->parent->color == red)
+			while (!z->parent->color)
 			{
 				if (z->parent == z->parent->parent->left)
 				{
 					node_pointer y = z->parent->parent->right;
 					/// case 1: z uncle is red -> recolor
-					if (y->color == red)
+					if (!y->color)
 					{
 						z->parent->color = black;
 						y->color = black;
@@ -199,7 +199,7 @@ namespace ft
 				else
 				{
 					node_pointer y = z->parent->parent->left;
-					if (y->color == red)
+					if (!y->color)
 					{
 						z->parent->color = black;
 						y->color = black;
@@ -256,7 +256,7 @@ namespace ft
 			if (z->left == _end)
 			{
 				x = z->right;
-				rb_transplant(z, z->right);
+				rb_transplant(z, z->right);;
 			}
 			else if (z->right == _end)
 			{
@@ -281,38 +281,34 @@ namespace ft
 				y->left->parent = y;
 				y->color = z->color;
 			}
-			std::cout << "Post delete:" << std::endl;
-			print();
-			std::cout << x->data << std::endl;
-			if (y_original_color == black)
+			if (y_original_color)
 				rb_delete_fixup(x);
 			_end->color = nill;
 		}
 
 		void rb_delete_fixup(node_pointer x)
 		{
-			while (x != _root && x->color == black)
+			while (x != _root && x->color)
 			{
 				if (x == x->parent->left)
 				{
 					node_pointer w = x->parent->right;
-					if (w->color == red)
+					if (!w->color)
 					{
 						w->color = black;
 						x->parent->color = red;
 						left_rotate(x->parent);
 						w = x->parent->right;
 					}
-					if (w->left->color == black ||  w->right->color == black)
+					if (w->left->color && w->right->color)
 					{
 						w->color = red;
-						x->parent->color = black;
+//						x->parent->color = black;
 						x = x->parent;
-						print();
 					}
 					else
 					{
-						if (w->right->color == black)
+						if (w->right->color)
 						{
 							w->left->color = black;
 							w->color = red;
@@ -329,22 +325,22 @@ namespace ft
 				else
 				{
 					node_pointer w = x->parent->left;
-					if (w->color == red)
+					if (!w->color)
 					{
 						w->color = black;
 						x->parent->color = red;
 						right_rotate(x->parent);
 						w = x->parent->left;
 					}
-					if (w->right->color == black && w->left->color == black)
+					if (w->right->color && w->left->color)
 					{
 						w->color = red;
-						x->parent->color = black;
+//						x->parent->color = black;
 						x = x->parent;
 					}
 					else
 					{
-						if (w->left->color == black)
+						if (w->left->color)
 						{
 							w->right->color = black;
 							w->color = red;
@@ -360,8 +356,6 @@ namespace ft
 				}
 			}
 			x->color = black;
-			std::cout << "Post fix up:" << std::endl;
-			print();
 		}
 
 		void init()
@@ -430,8 +424,8 @@ namespace ft
 
 		void remove_ptr(const node_pointer &node)
 		{
-			std::cout << "Rem " << node->data << std::endl;
-			print();
+//			std::cout << "REM " << node->data << std::endl;
+//			print();
 			rb_delete(node);
 			_size--;
 			if (_size)
@@ -449,9 +443,8 @@ namespace ft
 
 		bool remove(const value_type &data)
 		{
-
 			node_pointer rem_node = find(data);
-			if (rem_node->color == nill)
+			if (rem_node == _end)
 				return false;
 			remove_ptr(rem_node);
 			return true;

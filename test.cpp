@@ -1,4 +1,6 @@
 #include <cstdlib>
+#include <vector>
+#include <map>
 #ifdef STD
 #define VAR std
 #include <iostream>
@@ -18,6 +20,54 @@
 #endif
 #endif
 
+// int main()
+// {
+// 	typedef ft::map<int, std::string> M;
+// 	M m;
+// 	M::iterator it;
+// 	M::iterator ite;
+
+// 	for (int i = 0; i < 60; i++)
+// 		m.insert(ft::make_pair(i, "Hello"));
+
+// 	it = m.begin();
+// 	ite = m.end();
+// 	m.erase(it, ite);
+// 	std::cout << "End" << std::endl;
+// 	m.print_tree();
+
+// 	for (int i = 0; i < 60; i++)
+// 		m.insert(ft::make_pair(i, "Hello"));
+
+// 	m.print_tree();
+// 	it = m.begin();
+// 	ite = m.end();
+// 	m.erase(it, ite);
+// 	m.print_tree();
+
+// 	it = m.begin();
+// 	ite = m.begin();
+// 	std::advance(it, 10);
+// 	std::advance(ite, 20);
+// 	m.erase(it, ite);
+// 	m.print_tree();
+
+// 	std::cout << "To end" << std::endl;
+// 	it = m.begin();
+// 	ite = m.end();
+// 	std::advance(it, 10);
+// 	m.erase(it, ite);
+// 	m.print_tree();
+
+// 	std::cout << "From begin to end" << std::endl;
+// 	it = m.begin();
+// 	ite = m.end();
+// 	m.erase(it, ite);
+// 	m.print_tree();
+
+// }
+
+
 int main(int ac, char **av)
 {
 	int seed = 42;
@@ -32,7 +82,7 @@ int main(int ac, char **av)
 		std::cout << std::endl;
 		std::cout << "--------------------------------------------------------";
 		std::cout << std::endl;
-		VAR::vector<int>           myFirstVector = VAR::vector<int>();
+		VAR::vector<int>           myFirstVector;
 		VAR::vector<int>::iterator it = myFirstVector.begin();
 		for (it = myFirstVector.begin(); it != myFirstVector.end(); it++)
 			std::cout << *it;
@@ -425,7 +475,8 @@ int main(int ac, char **av)
 		std::cout << "--------------------------------------------------------";
 		std::cout << std::endl;
 		std::cout << std::endl;
-		VAR::stack<int>           myFirstStack = VAR::stack<int>();
+		VAR::vector<int>          myVector;
+		VAR::stack<int, VAR::vector<int> >           myFirstStack = VAR::stack<int>(myVector);
 		for (int i = 0; i < 10; i++)
 			myFirstStack.push(std::rand() % 2000 - 1000);
 		std::cout << "Size: " << myFirstStack.size() << std::endl;

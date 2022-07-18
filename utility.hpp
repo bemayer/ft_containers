@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <limits>
 
 namespace ft
 {
@@ -480,6 +481,12 @@ namespace ft
 	pair<T1, T2> make_pair(T1 x, T2 y)
 	{
 		return pair<T1, T2>(x, y);
+	}
+
+	template <typename T>
+	void swap(T &lhs, T &rhs)
+	{
+		std::swap<T>(lhs, rhs);
 	}
 }// namespace ft
 
