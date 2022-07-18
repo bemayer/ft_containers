@@ -8,7 +8,7 @@ namespace ft
 {
 	/** @stack
 	 * All required attributes and methods from:
-	 * https://en.cppreference.com/w/cpp/container/stack
+	 * http://en.cppreference.com/w/cpp/container/stack
 	 */
 	template <typename T, typename Container = ft::vector<T> >
 	struct stack

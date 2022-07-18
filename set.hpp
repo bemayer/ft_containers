@@ -1,3 +1,6 @@
+#ifndef MAP_HPP
+#define MAP_HPP
+
 #include "tree.hpp"
 #include "utility.hpp"
 
@@ -5,7 +8,7 @@ namespace ft
 {
 	/** @set
 	 * All required attributes and methods from:
-	 * https://en.cppreference.com/w/cpp/c/set
+	 * http://en.cppreference.com/w/cpp/c/set
 	 */
 	template <typename Key, typename Compare = ft::less<Key>,
 			  typename Allocator = std::allocator<Key> >
@@ -40,19 +43,24 @@ namespace ft
 
 	public:
 		/// Constructors
-		set(): _tree(key_compare(), allocator_type())
+		set(): _tree(key_compare(), node_allocator())
 		{
 		}
 
 		explicit set(const key_compare& comp,
 					 const allocator_type& alloc = allocator_type())
-			: _tree(comp, alloc)
+			: _tree(comp, node_allocator())
 		{
+			(void) alloc;
 		}
 
 		template <class InputIterator>
-		set(InputIterator first, InputIterator last) : _tree()
+		set(InputIterator first, InputIterator last,
+			const key_compare& comp = key_compare(),
+			const allocator_type& alloc = allocator_type())
+			: _tree(comp, node_allocator())
 		{
+			(void) alloc;
 			while (first != last)
 				insert(*first++);
 		}
@@ -300,3 +308,12 @@ namespace ft
 		return !(lhs < rhs);
 	}
 }// namespace ft
+
+namespace std {
+	template<class Key, class Compare, class Alloc>
+	void swap(ft::set<Key, Compare, Alloc> &lhs, ft::set<Key, Compare, Alloc> &rhs) {
+		lhs.swap(rhs);
+	}
+}// namespace std
+
+#endif

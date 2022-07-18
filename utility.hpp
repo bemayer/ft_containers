@@ -9,7 +9,7 @@ namespace ft
 {
 	/** @iterator_traits
 	 * Help found on:
-	 * https://en.cppreference.com/w/cpp/iterator/iterator_traits
+	 * http://en.cppreference.com/w/cpp/iterator/iterator_traits
 	 */
 	template <typename T>
 	struct iterator_traits
@@ -53,7 +53,7 @@ namespace ft
 
 	/** @reverse_iterator
 	 * All required attributes and methods from:
-	 * https://en.cppreference.com/w/cpp/iterator/reverse_iterator
+	 * http://en.cppreference.com/w/cpp/iterator/reverse_iterator
 	 */
 	template <typename T>
 	class reverse_iterator : public T
@@ -253,7 +253,7 @@ namespace ft
 
 	/** @iterator_constant
 	 * Help found on:
-	 * https://en.cppreference.com/w/cpp/types/integral_constant
+	 * http://en.cppreference.com/w/cpp/types/integral_constant
 	 */
 	template <typename T, T t>
 	struct integral_constant

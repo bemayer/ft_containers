@@ -303,7 +303,6 @@ namespace ft
 					if (w->left->color && w->right->color)
 					{
 						w->color = red;
-//						x->parent->color = black;
 						x = x->parent;
 					}
 					else
@@ -335,7 +334,6 @@ namespace ft
 					if (w->right->color && w->left->color)
 					{
 						w->color = red;
-//						x->parent->color = black;
 						x = x->parent;
 					}
 					else
@@ -424,8 +422,6 @@ namespace ft
 
 		void remove_ptr(const node_pointer &node)
 		{
-//			std::cout << "REM " << node->data << std::endl;
-//			print();
 			rb_delete(node);
 			_size--;
 			if (_size)
@@ -550,7 +546,7 @@ namespace ft
 
 	/** @tree_iterator
 	 * All required attributes and methods from:
-	 * https://www.cplusplus.com/reference/iterator/iterator/
+	 * http://en.cppreference.com/w/cpp/iterator/iterator
 	 */
 	template <typename T, typename Compare = ft::less<T> >
 	class tree_iterator
@@ -700,4 +696,5 @@ namespace ft
 		return !(lhs == rhs);
 	}
 }// namespace ft
+
 #endif

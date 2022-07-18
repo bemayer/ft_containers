@@ -123,6 +123,22 @@ namespace ft
 			return insert(ft::make_pair(k, mapped_type())).first->second;
 		}
 
+		mapped_type& at(const key_type &k)
+		{
+			node_pointer ptr = _tree.find(ft::make_pair(k, mapped_type()));
+			if (ptr->color == nill)
+				throw std::out_of_range("map::at");
+			return ptr->data.second;
+		}
+
+		const mapped_type& at(const key_type &k) const
+		{
+			node_pointer ptr = _tree.find(ft::make_pair(k, mapped_type()));
+			if (ptr->color == nill)
+				throw std::out_of_range("map::at");
+			return ptr->data.second;
+		}
+
 		iterator begin()
 		{
 			return iterator(_tree.begin());
