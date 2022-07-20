@@ -1,5 +1,5 @@
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef SET_HPP
+#define SET_HPP
 
 #include "tree.hpp"
 #include "utility.hpp"
@@ -187,11 +187,11 @@ namespace ft
 
 		void swap(set &x)
 		{
-			std::swap(_tree._allocator, x._tree._allocator);
-			std::swap(_tree._root, x._tree._root);
-			std::swap(_tree._end, x._tree._end);
-			std::swap(_tree._compare, x._tree._compare);
-			std::swap(_tree._size, x._tree._size);
+			ft::swap(_tree._allocator, x._tree._allocator);
+			ft::swap(_tree._root, x._tree._root);
+			ft::swap(_tree._end, x._tree._end);
+			ft::swap(_tree._compare, x._tree._compare);
+			ft::swap(_tree._size, x._tree._size);
 		}
 
 		size_type count(const key_type &k) const

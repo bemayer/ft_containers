@@ -61,7 +61,7 @@ namespace ft
 		typedef RB_tree<value_type, value_compare, node_allocator>
 		                                                       tree_type;
 		typedef tree_type                                     *tree_pointer;
-		typedef std::allocator<tree_type> tree_allocator;
+		typedef std::allocator<tree_type>                      tree_allocator;
 
 	protected:
 		key_compare    _comp;
@@ -70,13 +70,13 @@ namespace ft
 
 	public:
 		/// Constructors
-		map() : _comp(key_compare()), _alloc(allocator_type()),
-				_tree(tree_type())
+		map()
+			: _comp(key_compare()), _alloc(allocator_type()), _tree(tree_type())
 		{
 		}
 
 		explicit map(const key_compare    &comp,
-			const allocator_type &alloc = allocator_type())
+					 const allocator_type &alloc = allocator_type())
 			: _comp(comp), _alloc(alloc), _tree(tree_type())
 		{
 		}
@@ -87,7 +87,8 @@ namespace ft
 			const allocator_type &alloc = allocator_type())
 			: _comp(comp), _alloc(alloc), _tree(tree_type())
 		{
-			while (first != last){
+			while (first != last)
+			{
 				insert(*first);
 				++first;
 			}
@@ -123,7 +124,7 @@ namespace ft
 			return insert(ft::make_pair(k, mapped_type())).first->second;
 		}
 
-		mapped_type& at(const key_type &k)
+		mapped_type &at(const key_type &k)
 		{
 			node_pointer ptr = _tree.find(ft::make_pair(k, mapped_type()));
 			if (ptr->color == nill)
@@ -131,7 +132,7 @@ namespace ft
 			return ptr->data.second;
 		}
 
-		const mapped_type& at(const key_type &k) const
+		const mapped_type &at(const key_type &k) const
 		{
 			node_pointer ptr = _tree.find(ft::make_pair(k, mapped_type()));
 			if (ptr->color == nill)
@@ -247,13 +248,13 @@ namespace ft
 
 		void swap(map &x)
 		{
-			std::swap(_comp, x._comp);
-			std::swap(_alloc, x._alloc);
-			std::swap(_tree._allocator, x._tree._allocator);
-			std::swap(_tree._root, x._tree._root);
-			std::swap(_tree._end, x._tree._end);
-			std::swap(_tree._compare, x._tree._compare);
-			std::swap(_tree._size, x._tree._size);
+			ft::swap(_comp, x._comp);
+			ft::swap(_alloc, x._alloc);
+			ft::swap(_tree._allocator, x._tree._allocator);
+			ft::swap(_tree._root, x._tree._root);
+			ft::swap(_tree._end, x._tree._end);
+			ft::swap(_tree._compare, x._tree._compare);
+			ft::swap(_tree._size, x._tree._size);
 		}
 
 		size_type count(const key_type &k) const
@@ -373,9 +374,12 @@ namespace ft
 	}
 }// namespace ft
 
-namespace std {
-	template<class Key, class T, class Compare, class Alloc>
-	void swap(ft::map<Key, T, Compare, Alloc> &lhs, ft::map<Key, T, Compare, Alloc> &rhs) {
+namespace std
+{
+	template <class Key, class T, class Compare, class Alloc>
+	void swap(ft::map<Key, T, Compare, Alloc> &lhs,
+			  ft::map<Key, T, Compare, Alloc> &rhs)
+	{
 		lhs.swap(rhs);
 	}
 }// namespace std

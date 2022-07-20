@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <limits>
+#include <algorithm>
 
 namespace ft
 {
@@ -217,7 +218,7 @@ namespace ft
 					const reverse_iterator<U> &rhs)
 	{
 		return !(lhs == rhs);
-	};
+	}
 
 	template <typename T, typename U>
 	bool operator<(const reverse_iterator<T> &lhs,
@@ -368,7 +369,6 @@ namespace ft
 			first1++;
 			first2++;
 		}
-		return true;
 	}
 
 	/** @distance

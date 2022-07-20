@@ -5,9 +5,7 @@
 #include <vector>
 #include <map>
 #include <stack>
-#ifdef BONUS
 #include <set>
-#endif
 #else
 #define VAR ft
 #include "vector.hpp"
@@ -107,7 +105,7 @@ int main(int ac, char **av)
 		for (it = myFirstVector.begin(); it != myFirstVector.end(); it++)
 			std::cout << *it << " ";
 		std::cout << std::endl;
-		std::cout << " Remove all the elements from the second to the 7th and";
+		std::cout << " Remove all the elements from the third to the 7th and";
 		std::cout << std::endl;
 		std::cout << "iterate from the last deleted one";
 		std::cout << std::endl;
@@ -172,15 +170,20 @@ int main(int ac, char **av)
 		VAR::vector<int> myTimedVector;
 		std::cout << "Vector size: " << myTimedVector.size() << std::endl;
 		for (int i = 0; i < 1000000; i++)
-			myTimedVector.push_back(1);
+			myTimedVector.push_back(i);
+		for (int i = 0; i < 1000; i++) {
+			myTimedVector.insert(myTimedVector.begin() + (std::rand()
+				% 1000000), std::rand() % 1000, std::rand() % 100);
+		}
 		std::cout << "Vector size: " << myTimedVector.size() << std::endl;
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < 1001000; i++)
 			myTimedVector[i];
 		for (VAR::vector<int>::iterator iter = myTimedVector.begin();
 			 iter != myTimedVector.end(); iter++)
 		{
 		}
-		for (int i = 0; i < 1000000; i++)
+		int s = myTimedVector.size();
+		for (int i = 0; i < s; i++)
 			myTimedVector.pop_back();
 		std::cout << "Vector size: " << myTimedVector.size() << std::endl;
 	}
@@ -425,8 +428,7 @@ int main(int ac, char **av)
 		std::cout << "--------------------------------------------------------";
 		std::cout << std::endl;
 		std::cout << std::endl;
-		VAR::vector<int>          myVector;
-		VAR::stack<int, VAR::vector<int> >           myFirstStack = VAR::stack<int>(myVector);
+		VAR::stack<int> myFirstStack;
 		for (int i = 0; i < 10; i++)
 			myFirstStack.push(std::rand() % 2000 - 1000);
 		std::cout << "Size: " << myFirstStack.size() << std::endl;
