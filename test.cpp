@@ -105,7 +105,7 @@ int main(int ac, char **av)
 		for (it = myFirstVector.begin(); it != myFirstVector.end(); it++)
 			std::cout << *it << " ";
 		std::cout << std::endl;
-		std::cout << " Remove all the elements from the third to the 7th and";
+		std::cout << "Remove all the elements from the third to the 7th and";
 		std::cout << std::endl;
 		std::cout << "iterate from the last deleted one";
 		std::cout << std::endl;
