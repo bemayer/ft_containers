@@ -171,19 +171,14 @@ int main(int ac, char **av)
 		std::cout << "Vector size: " << myTimedVector.size() << std::endl;
 		for (int i = 0; i < 1000000; i++)
 			myTimedVector.push_back(i);
-		for (int i = 0; i < 1000; i++) {
-			myTimedVector.insert(myTimedVector.begin() + (std::rand()
-				% 1000000), std::rand() % 1000, std::rand() % 100);
-		}
 		std::cout << "Vector size: " << myTimedVector.size() << std::endl;
-		for (int i = 0; i < 1001000; i++)
+		for (int i = 0; i < 1000000; i++)
 			myTimedVector[i];
 		for (VAR::vector<int>::iterator iter = myTimedVector.begin();
 			 iter != myTimedVector.end(); iter++)
 		{
 		}
-		int s = myTimedVector.size();
-		for (int i = 0; i < s; i++)
+		for (int i = 0; i < 1000000; i++)
 			myTimedVector.pop_back();
 		std::cout << "Vector size: " << myTimedVector.size() << std::endl;
 	}

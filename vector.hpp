@@ -655,7 +655,7 @@ namespace ft
 				if (_capacity * 2 > max_size())
 					return max_size();
 				else
-					return _capacity ? _capacity * 2 : 1;
+					return _capacity * 2;
 			}
 			return new_size;
 		}
