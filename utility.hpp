@@ -241,6 +241,10 @@ namespace ft
 		return !(lhs <= rhs);
 	}
 
+	/** @enable_if
+	 * Help found on:
+	 * http://en.cppreference.com/w/cpp/types/enable_if
+	 */
 	template <bool B, typename T = void>
 	struct enable_if
 	{

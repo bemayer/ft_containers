@@ -326,7 +326,7 @@ namespace ft
 			return const_reverse_iterator(begin());
 		}
 
-		/// Capacity
+		/// Member functions
 		size_t size() const
 		{
 			return _size;
@@ -544,8 +544,7 @@ namespace ft
 		}
 
 		template <typename U>
-		void
-		insert(iterator position,
+		void insert(iterator                                               position,
 			   typename ft::enable_if<!ft::is_integral<U>::value, U>::type first,
 			   U                                                           last)
 		{
