@@ -40,7 +40,7 @@ int main(int ac, char **av)
 
 		VAR::vector<int> mySecondVector(myFirstVector.begin() + 4,
 										myFirstVector.end() - 3);
-		mySecondVector.insert(mySecondVector.begin(), 3, 1);
+		mySecondVector.insert(mySecondVector.begin(), 5, 1);
 		mySecondVector.insert(mySecondVector.begin() + 3,
 							  myFirstVector.end() - 1, myFirstVector.end());
 		std::cout << "First vector ";
@@ -49,7 +49,7 @@ int main(int ac, char **av)
 			std::cout << *it << " ";
 		std::cout << std::endl;
 		std::cout << std::endl;
-		std::cout << "Second vector with 3 '1', the last element and the 3";
+		std::cout << "Second vector with 5 '1', the last element and the 3";
 		std::cout << std::endl;
 		std::cout << "mid elements  of the first vector";
 		std::cout << std::endl;
